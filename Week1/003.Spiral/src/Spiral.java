@@ -26,8 +26,8 @@ public class Spiral extends Application {
         graphics.translate(1920 / 2, 1080 / 2);
         graphics.scale(1, -1);
 
-        double resolution = 0.1;
-        double scale = 40.0;
+        double resolution = 0.01;
+        double scale = 5.0;
         double lastY = Math.sin(0);
         double lastX = Math.cos(0);
         float straal = 1;
