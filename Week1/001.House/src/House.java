@@ -23,18 +23,19 @@ public class House extends Application {
 
 
     public void draw(FXGraphics2D graphics) throws IOException {
+        //frame
         graphics.drawLine(100,1000,100,500);
         graphics.drawLine(1000,1000,1000,500);
         graphics.drawLine(100,1000,1000,1000);
         graphics.drawLine(100,500,550,100);
         graphics.drawLine(550,100,1000,500);
 
-
+        //door
         graphics.drawLine(200,1000,200,700);
         graphics.drawLine(200,700,350,700);
         graphics.drawLine(350,700,350,1000);
 
-
+        //window
         graphics.drawLine(500,900,850,900);
         graphics.drawLine(500,900,500,650);
         graphics.drawLine(500,650,850,650);
