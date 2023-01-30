@@ -1,6 +1,7 @@
 import java.awt.*;
 import java.awt.geom.*;
 import java.nio.DoubleBuffer;
+import java.util.Collections;
 
 import javafx.application.Application;
 
@@ -21,7 +22,8 @@ public class Spirograph extends Application {
     private TextField v2;
     private TextField v3;
     private TextField v4;
-    private Button button;
+    private Button draw;
+    private Button clear;
 
     private boolean firstDraw = false;
 
@@ -38,7 +40,8 @@ public class Spirograph extends Application {
         topBar.getChildren().add(v2 = new TextField("1"));
         topBar.getChildren().add(v3 = new TextField("300"));
         topBar.getChildren().add(v4 = new TextField("10"));
-        topBar.getChildren().add(button = new Button("draw"));
+        topBar.getChildren().add(draw = new Button("draw"));
+        topBar.getChildren().add(clear = new Button("clear"));
 
 
         draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
@@ -46,9 +49,9 @@ public class Spirograph extends Application {
         primaryStage.setTitle("Spirograph");
         primaryStage.show();
 
-        button.setOnAction(event -> {
-            draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
-        });
+        draw.setOnAction(event -> draw(new FXGraphics2D(canvas.getGraphicsContext2D())));
+
+        clear.setOnAction(event -> clear(new FXGraphics2D(canvas.getGraphicsContext2D())));
     }
 
 
@@ -87,6 +90,15 @@ public class Spirograph extends Application {
             graphics.drawLine(-1000, 0, 1000, 0); // x as
             graphics.drawLine(0, 1000, 0, -1000); // y as
         }
+    }
+
+    public void clear(FXGraphics2D graphics){
+        graphics.setColor(Color.white);
+        graphics.fillRect(-1000, -1000, 2000, 2000);
+
+        graphics.setColor(Color.red);
+        graphics.drawLine(-1000, 0, 1000, 0); // x as
+        graphics.drawLine(0, 1000, 0, -1000); // y as
     }
 
 
