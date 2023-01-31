@@ -61,6 +61,7 @@ public class Spirograph extends Application {
 
         graphics.setColor(Color.getHSBColor((float) (Math.random() * 256), 1, 1));
         if (firstDraw) {
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.translate(1920 / 2, 1080 / 2);
             graphics.scale(1, -1);
             firstDraw = false;
