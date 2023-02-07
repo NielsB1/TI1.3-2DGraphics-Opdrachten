@@ -12,6 +12,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
@@ -26,6 +27,7 @@ public class BlockDrag extends Application {
 
     private double x = 0;
     private double y = 0;
+    private double scale = 1;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -39,6 +41,19 @@ public class BlockDrag extends Application {
         canvas.setOnMousePressed(e -> mousePressed(e));
         canvas.setOnMouseReleased(e -> mouseReleased(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
+
+        canvas.addEventHandler(ScrollEvent.SCROLL, event -> {
+            if (event.getDeltaY() > 0 && this.scale < 2) {
+                this.scale += 0.05;
+                canvas.setScaleX(scale);
+                canvas.setScaleY(scale);
+            } else if (this.scale > 0.64) {
+                this.scale -= 0.05;
+                canvas.setScaleX(scale);
+                canvas.setScaleY(scale);
+            }
+        });
+
 
         draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
     }
@@ -111,7 +126,7 @@ public class BlockDrag extends Application {
             renderables.add(blok);
 
             draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
-        } else if (e.getButton().equals(MouseButton.SECONDARY)){
+        } else if (e.getButton().equals(MouseButton.SECONDARY)) {
 
             this.x = this.x + (e.getX() - (1920 / 2f));
             this.y = this.y - (e.getY() * -1 + (1080 / 2f));
