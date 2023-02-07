@@ -59,7 +59,7 @@ public class Spirograph extends Application {
         //you can use Double.parseDouble(v1.getText()) to get a double value from the first textfield
         //feel free to add more textfields or other controls if needed, but beware that swing components might clash in naming
 
-        graphics.setColor(Color.getHSBColor((float) (Math.random() * 256), 1, 1));
+        graphics.setColor(Color.getHSBColor((float) (Math.random() * 256), 0.7f, 1));
         if (firstDraw) {
             graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.translate(1920 / 2, 1080 / 2);
