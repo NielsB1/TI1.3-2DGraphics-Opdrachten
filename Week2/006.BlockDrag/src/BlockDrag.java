@@ -35,7 +35,7 @@ public class BlockDrag extends Application {
         primaryStage.setScene(new Scene(mainPane));
         primaryStage.setTitle("Block Dragging");
         primaryStage.show();
-        
+
         canvas.setOnMousePressed(e -> mousePressed(e));
         canvas.setOnMouseReleased(e -> mouseReleased(e));
         canvas.setOnMouseDragged(e -> mouseDragged(e));
@@ -79,8 +79,6 @@ public class BlockDrag extends Application {
 
     private void mousePressed(MouseEvent e) {
 
-        System.out.println(e.getButton());
-        System.out.println("bruh");
         double x = e.getX() - (1920 / 2f);
         double y = e.getY() * -1 + (1080 / 2f);
 
@@ -88,7 +86,6 @@ public class BlockDrag extends Application {
         if (e.getButton().equals(MouseButton.PRIMARY)) {
             for (Renderable renderable : renderables) {
                 if (renderable.getPosition().getX() - x < 50 && renderable.getPosition().getX() - x > -50 && renderable.getPosition().getY() - y < 50 && renderable.getPosition().getY() - y > -50) {
-                    System.out.println("ik heb er een");
                     this.currentlySelected = renderable;
                     break;
                 }
