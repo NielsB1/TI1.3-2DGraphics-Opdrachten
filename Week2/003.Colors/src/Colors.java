@@ -1,5 +1,7 @@
 import java.awt.*;
 import java.awt.geom.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import javafx.application.Application;
 
@@ -33,6 +35,8 @@ public class Colors extends Application {
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+
+        ArrayList colors = new ArrayList<Color>(Color.black, Color.blue);
     }
 
 

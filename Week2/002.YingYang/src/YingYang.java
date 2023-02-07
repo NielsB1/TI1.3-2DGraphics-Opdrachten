@@ -41,13 +41,12 @@ public class YingYang extends Application {
         Area circle = new Area(new Ellipse2D.Double(-50, -50, 100, 100)); //main circle
         Area circle2 = new Area(new Ellipse2D.Double(-25, -50, 50, 50)); //bottom black circle
         Area circle3 = new Area(new Ellipse2D.Double(-25, 0, 50, 50)); //top white circle
-        Area circle4 = new Area(new Rectangle.Double(-100,-50,100,100)); //weird rectangle to subtract circle 1
+        Area circle4 = new Area(new Rectangle.Double(-100, -50, 100, 100)); //weird rectangle to subtract circle 1
         Area circle5 = new Area(new Ellipse2D.Double(-50, -50, 100, 100)); //copy of circle 1 top draw a outline
 
 
         Area circle6 = new Area(new Ellipse2D.Double(-5, 20, 10, 10)); //small black circle
         Area circle7 = new Area(new Ellipse2D.Double(-5, -30, 10, 10)); //small white circle
-
 
 
 
