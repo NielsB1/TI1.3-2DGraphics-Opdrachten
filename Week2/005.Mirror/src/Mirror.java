@@ -14,7 +14,7 @@ import org.jfree.fx.ResizableCanvas;
 
 public class Mirror extends Application {
     ResizableCanvas canvas;
-    private double rc = 2.5;
+    private double rc = 1;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
