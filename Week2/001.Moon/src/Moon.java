@@ -30,9 +30,36 @@ public class Moon extends Application {
 
     public void draw(FXGraphics2D graphics)
     {
+
         graphics.setTransform(new AffineTransform());
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+
+        GeneralPath myShape = new GeneralPath();
+
+        graphics.translate(1920/2 , 1080/2);
+        graphics.scale(1,-1);
+
+        myShape.moveTo(-50f, 200f);
+        myShape.quadTo(250f, -20f, -100f, -150f);
+
+        myShape.quadTo(100, -20, -50, 200);
+
+
+
+
+        myShape.closePath();
+
+        graphics.setColor(Color.yellow);
+        graphics.fill(myShape);
+
+        graphics.setColor(Color.BLACK);
+
+
+        graphics.draw(myShape);
+
+        graphics.scale(1,-1);
+        graphics.drawString("Monkey", -300,-300);
     }
 
 
