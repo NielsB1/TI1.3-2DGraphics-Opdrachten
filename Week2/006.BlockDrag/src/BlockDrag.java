@@ -22,9 +22,7 @@ public class BlockDrag extends Application {
     ResizableCanvas canvas;
     private ArrayList<Renderable> renderables = new ArrayList<>();
     private Renderable currentlySelected;
-
-    private boolean first = true;
-
+    
     private double x = 0;
     private double y = 0;
     private double scale = 1;
@@ -70,11 +68,9 @@ public class BlockDrag extends Application {
         graphics.setBackground(Color.white);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
 
-        if (first) {
             graphics.translate(1920 / 2, 1080 / 2);
             graphics.scale(1, -1);
-//            first = false;
-        }
+
 
         for (Renderable renderable : renderables) {
             Rectangle2D blok = new Rectangle2D.Double(renderable.getPosition().getX() - 50, renderable.getPosition().getY() - 50, 100, 100);
