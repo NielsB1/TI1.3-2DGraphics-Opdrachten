@@ -25,7 +25,7 @@ public class Spirograph extends Application {
     private Button draw;
     private Button clear;
 
-    private boolean firstDraw = false;
+    private boolean firstDraw = true;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -60,10 +60,11 @@ public class Spirograph extends Application {
         //feel free to add more textfields or other controls if needed, but beware that swing components might clash in naming
 
         graphics.setColor(Color.getHSBColor((float) (Math.random() * 256), 1, 1));
-        if (!firstDraw) {
+        if (firstDraw) {
+            graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             graphics.translate(1920 / 2, 1080 / 2);
             graphics.scale(1, -1);
-            firstDraw = true;
+            firstDraw = false;
         }
 
         if (!v1.getText().isEmpty() && !v2.getText().isEmpty() && !v3.getText().isEmpty() && !v4.getText().isEmpty()) {
@@ -73,7 +74,7 @@ public class Spirograph extends Application {
             double d = Double.parseDouble(v4.getText());
 
 
-            double resolution = 0.01;
+            double resolution = 0.001;
             double scale = 1.0;
             double lastY = (a * Math.sin(b * 0) + c * Math.sin(d * 0));
             double lastX = (a * Math.cos(b * 0) + c * Math.cos(d * 0));
@@ -92,7 +93,7 @@ public class Spirograph extends Application {
         }
     }
 
-    public void clear(FXGraphics2D graphics){
+    public void clear(FXGraphics2D graphics) {
         graphics.setColor(Color.white);
         graphics.fillRect(-1000, -1000, 2000, 2000);
 

@@ -13,7 +13,7 @@ import org.jfree.fx.FXGraphics2D;
 
 public class Spiral extends Application {
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage){
         Canvas canvas = new Canvas(1920, 1080);
         draw(new FXGraphics2D(canvas.getGraphicsContext2D()));
         primaryStage.setScene(new Scene(new Group(canvas)));
@@ -22,7 +22,7 @@ public class Spiral extends Application {
     }
 
 
-    public void draw(FXGraphics2D graphics) throws InterruptedException {
+    public void draw(FXGraphics2D graphics) {
         graphics.translate(1920 / 2, 1080 / 2);
         graphics.scale(1, -1);
 
