@@ -34,18 +34,18 @@ public class Rainbow extends Application {
 //        graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
         graphics.translate(1920 / 2, 1080 / 2);
 
-        String string = "BOOGREGEN";
+        String string = "Boogregen";
         Font font = new Font("Monospaced", Font.BOLD, 150);
         double angle = -(Math.PI / 2) + (Math.PI / string.length() / 4);
 
         for (int i = 0; i < string.length(); i++) {
-            Shape shape = font.createGlyphVector(graphics.getFontRenderContext(), String.valueOf(string.charAt(i))).getOutline();
+            Shape shape = font.createGlyphVector(graphics.getFontRenderContext(), String.valueOf(string.charAt(i)).toUpperCase()).getOutline();
             AffineTransform affineTransform = new AffineTransform();
 
             affineTransform.translate(300 * Math.cos(angle - (Math.PI / 2)), 300 * Math.sin(angle - (Math.PI / 2)));
             affineTransform.rotate((angle));
 
-            graphics.setColor(Color.getHSBColor(((float) 1 / string.length()) * i, 0.5f, 1));
+            graphics.setColor(Color.getHSBColor((float) i / string.length(), 0.5f, 1));
             graphics.fill(affineTransform.createTransformedShape(shape));
 
             graphics.setColor(Color.black);
