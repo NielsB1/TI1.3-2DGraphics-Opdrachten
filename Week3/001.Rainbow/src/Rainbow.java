@@ -16,8 +16,7 @@ public class Rainbow extends Application {
     private ResizableCanvas canvas;
 
     @Override
-    public void start(Stage stage) throws Exception
-    {
+    public void start(Stage stage) throws Exception {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
         mainPane.setCenter(canvas);
@@ -28,16 +27,35 @@ public class Rainbow extends Application {
     }
 
 
-    public void draw(FXGraphics2D graphics)
-    {
-        graphics.setTransform(new AffineTransform());
+    public void draw(FXGraphics2D graphics) {
+
         graphics.setBackground(Color.white);
-        graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+        graphics.setTransform(new AffineTransform());
+//        graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
+        graphics.translate(1920 / 2, 1080 / 2);
+
+        String string = "BOOGREGEN";
+        Font font = new Font("Monospaced", Font.BOLD, 150);
+        double angle = -(Math.PI / 2) + (Math.PI / string.length() / 4);
+
+        for (int i = 0; i < string.length(); i++) {
+            Shape shape = font.createGlyphVector(graphics.getFontRenderContext(), String.valueOf(string.charAt(i))).getOutline();
+            AffineTransform affineTransform = new AffineTransform();
+
+            affineTransform.translate(300 * Math.cos(angle - (Math.PI / 2)), 300 * Math.sin(angle - (Math.PI / 2)));
+            affineTransform.rotate((angle));
+
+            graphics.setColor(Color.getHSBColor(((float) 1 / string.length()) * i, 0.7f, 1));
+            graphics.fill(affineTransform.createTransformedShape(shape));
+
+            graphics.setColor(Color.black);
+            graphics.draw(affineTransform.createTransformedShape(shape));
+            angle += (Math.PI / string.length());
+        }
     }
 
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         launch(Rainbow.class);
     }
 

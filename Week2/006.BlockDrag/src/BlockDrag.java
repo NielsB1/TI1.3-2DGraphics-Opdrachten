@@ -137,7 +137,7 @@ public class BlockDrag extends Application {
     public void init() {
         int width = 100;
         int height = 100;
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100000; i++) {
             int x = (int) ((Math.random() * 1600) - 800);
             int y = (int) ((Math.random() * 900) - 450);
 
