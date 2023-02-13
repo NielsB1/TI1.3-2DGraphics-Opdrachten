@@ -45,7 +45,7 @@ public class Rainbow extends Application {
             affineTransform.translate(300 * Math.cos(angle - (Math.PI / 2)), 300 * Math.sin(angle - (Math.PI / 2)));
             affineTransform.rotate((angle));
 
-            graphics.setColor(Color.getHSBColor(((float) 1 / string.length()) * i, 0.7f, 1));
+            graphics.setColor(Color.getHSBColor(((float) 1 / string.length()) * i, 0.5f, 1));
             graphics.fill(affineTransform.createTransformedShape(shape));
 
             graphics.setColor(Color.black);
