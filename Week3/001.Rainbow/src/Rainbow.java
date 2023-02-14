@@ -34,7 +34,7 @@ public class Rainbow extends Application {
 //        graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
         graphics.translate(1920 / 2, 1080 / 2);
 
-        String string = "Boogregen";
+        String string = "Luc";
         Font font = new Font("Monospaced", Font.BOLD, 150);
         double angle = -(Math.PI / 2) + (Math.PI / string.length() / 4);
 

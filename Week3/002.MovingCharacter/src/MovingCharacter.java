@@ -100,7 +100,7 @@ public class MovingCharacter extends Application {
     public void update(double deltaTime) {
 //        if (!stop){
 //        if (!isJumping)
-            positionX += 3;
+            positionX += 2;
 //        else positionX += 0;
 
         if (positionX >= 1920.0) {
