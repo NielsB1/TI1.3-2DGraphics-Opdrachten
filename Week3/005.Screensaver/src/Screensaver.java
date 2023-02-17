@@ -100,7 +100,7 @@ public class Screensaver extends Application {
         point3 = new Point(new Point2D.Double(-100, -300), 1, -0.5);
         point4 = new Point(new Point2D.Double(-500, -300), -1, 1.5);
 
-        velocity = 5;
+        velocity = 3;
 
         Collections.addAll(points, point1, point2, point3, point4);
     }

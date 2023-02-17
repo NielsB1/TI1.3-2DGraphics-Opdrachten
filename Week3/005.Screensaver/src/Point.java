@@ -5,6 +5,9 @@ public class Point {
     private int direction;
     private double rc;
 
+    private Boolean turnedAround = false;
+    private Boolean outOfBounds = false;
+
 
     public Point(Point2D point, int direction, double rc) {
         this.point = point;
@@ -34,5 +37,21 @@ public class Point {
 
     public void setRc(double rc) {
         this.rc = rc;
+    }
+
+    public Boolean getTurnedAround() {
+        return turnedAround;
+    }
+
+    public void setTurnedAround(Boolean turnedAround) {
+        this.turnedAround = turnedAround;
+    }
+
+    public Boolean getOutOfBounds() {
+        return outOfBounds;
+    }
+
+    public void setOutOfBounds(Boolean outOfBounds) {
+        this.outOfBounds = outOfBounds;
     }
 }
