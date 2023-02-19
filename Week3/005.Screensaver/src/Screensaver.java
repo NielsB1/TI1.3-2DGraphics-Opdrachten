@@ -81,7 +81,7 @@ public class Screensaver extends Application {
         previousLines.add(new Line2D.Double(point3.getPoint().getX(), point3.getPoint().getY(), point4.getPoint().getX(), point4.getPoint().getY()));
         previousLines.add(new Line2D.Double(point4.getPoint().getX(), point4.getPoint().getY(), point1.getPoint().getX(), point1.getPoint().getY()));
 
-        if (previousLines.size() > 100) {
+        if (previousLines.size() > 300) {
             for (int i = 0; i < 4; i++) {
                 previousLines.remove(i);
             }
@@ -95,31 +95,39 @@ public class Screensaver extends Application {
     }
 
     public void init() {
-        point1 = new Point(new Point2D.Double(-500, 100), -1, -1.5);
-        point2 = new Point(new Point2D.Double(-100, 100), 1, 0.5);
-        point3 = new Point(new Point2D.Double(-100, -300), 1, -0.5);
-        point4 = new Point(new Point2D.Double(-500, -300), -1, 1.5);
+        point1 = new Point(new Point2D.Double(-500, 100), -1, 1.75);
+        point2 = new Point(new Point2D.Double(-100, 100), 1, -1.5);
+        point3 = new Point(new Point2D.Double(-100, -300), 1, 0.75);
+        point4 = new Point(new Point2D.Double(-500, -300), -1, -0.5);
 
-        velocity = 3;
+        velocity = 4;
 
         Collections.addAll(points, point1, point2, point3, point4);
     }
 
     public void update(double deltaTime) {
         for (Point point : points) {
-            if (point.getPoint().getX() <= -960 || point.getPoint().getX() >= 960) {
-                point.setDirection(-point.getDirection());
-                point.setRc(-(1 / point.getRc()));
-            }
-            else if (point.getPoint().getY() <= -540 || point.getPoint().getY() >= 540) {
-                point.setRc(-(1 / point.getRc()));
-            }
-        double x = point.getPoint().getX() + (point.getDirection() * velocity);
-        double y = point.getPoint().getY() + (point.getDirection() * velocity * point.getRc());
-        point.setPoint(new Point2D.Double(x, y));
-    }
+            double oldX = point.getPoint().getX();
+            double oldY = point.getPoint().getY();
 
-}
+            if (oldX <= -960 || oldX >= 960) {
+                point.setDirection(-point.getDirection());
+//                point.setRc(-(1 / point.getRc()));
+            } else if (oldY <= -540 || oldY >= 540) {
+                point.setRc(-(1 / point.getRc()));
+            }
+
+            if (point.getRc() > 0 && oldY > 540) {
+                point.setRc(-(1 / point.getRc()));
+            } else if (point.getRc() < 0 && oldY < -540) {
+                point.setRc(-(1 / point.getRc()));
+            }
+
+            double x = oldX + (point.getDirection() * velocity);
+            double y = oldY + (velocity * point.getRc());
+            point.setPoint(new Point2D.Double(x, y));
+        }
+    }
 
     public static void main(String[] args) {
         launch(Screensaver.class);
