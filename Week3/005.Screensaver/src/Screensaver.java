@@ -36,6 +36,8 @@ public class Screensaver extends Application {
 
     private double velocity;
 
+    private float color = 0;
+
     @Override
     public void start(Stage stage) throws Exception {
 
@@ -70,7 +72,7 @@ public class Screensaver extends Application {
         graphics.clearRect(-1000, -1000, 4000, 4000);
 
         if (firstDraw) {
-            graphics.setColor(Color.magenta);
+//            graphics.setColor(Color.magenta);
             graphics.translate(1920 / 2, 1080 / 2);
             graphics.scale(1, -1);
         }
@@ -87,6 +89,11 @@ public class Screensaver extends Application {
             }
         }
 
+        graphics.setColor(Color.getHSBColor(this.color, 0.8f, 1));
+        if (this.color >= 1)
+            this.color = 0;
+        else this.color += 1 /256f;
+
         for (Line2D previousLine : previousLines) {
             graphics.draw(previousLine);
         }
@@ -100,7 +107,7 @@ public class Screensaver extends Application {
         point3 = new Point(new Point2D.Double(-100, -300), 1, 0.75);
         point4 = new Point(new Point2D.Double(-500, -300), -1, -0.5);
 
-        velocity = 4;
+        velocity = 5;
 
         Collections.addAll(points, point1, point2, point3, point4);
     }
@@ -112,7 +119,6 @@ public class Screensaver extends Application {
 
             if (oldX <= -960 || oldX >= 960) {
                 point.setDirection(-point.getDirection());
-//                point.setRc(-(1 / point.getRc()));
             } else if (oldY <= -540 || oldY >= 540) {
                 point.setRc(-(1 / point.getRc()));
             }
