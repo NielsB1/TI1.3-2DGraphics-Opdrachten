@@ -95,6 +95,7 @@ public class Screensaver extends Application {
         else this.color += 1 /256f;
 
         for (Line2D previousLine : previousLines) {
+//            graphics.setColor(Color.getHSBColor((float) Math.random(), 0.8f, 1));
             graphics.draw(previousLine);
         }
 
@@ -102,10 +103,10 @@ public class Screensaver extends Application {
     }
 
     public void init() {
-        point1 = new Point(new Point2D.Double(-500, 100), -1, 1.75);
-        point2 = new Point(new Point2D.Double(-100, 100), 1, -1.5);
-        point3 = new Point(new Point2D.Double(-100, -300), 1, 0.75);
-        point4 = new Point(new Point2D.Double(-500, -300), -1, -0.5);
+        point1 = new Point(new Point2D.Double(-500, 100), -1, 1);
+        point2 = new Point(new Point2D.Double(-100, 100), -1, -1);
+        point3 = new Point(new Point2D.Double(-100, -300), 1, 1);
+        point4 = new Point(new Point2D.Double(-500, -300), 1, -1);
 
         velocity = 5;
 
