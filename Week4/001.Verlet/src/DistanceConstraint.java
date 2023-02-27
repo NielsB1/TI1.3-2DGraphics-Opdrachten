@@ -36,8 +36,7 @@ public class DistanceConstraint implements Constraint {
         float hue = 1 / 360f * 120f;
 
         if (force > 0) {
-            if ((hue -= force) > 0 && (hue -= force) < 120)
-                hue = (float) (1 / 360f * (120f - force));
+            hue = (float) (1 / 360f * (120f - (10 * force)));
         }
         if (hue < 0.0f) {
             hue = 0;
@@ -47,7 +46,6 @@ public class DistanceConstraint implements Constraint {
             hue = 1 / 360f * 120f;
         }
 
-        System.out.println(force + " - " + hue);
         Color color = Color.getHSBColor(hue, 1, 1);
         this.color = color;
 
