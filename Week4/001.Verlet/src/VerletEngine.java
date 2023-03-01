@@ -130,6 +130,10 @@ public class VerletEngine extends Application {
             if (e.isControlDown()){
                 constraints.add(new PositionConstraint(newParticle));
             }
+            if (e.isShiftDown()){
+                particles.add(newParticle);
+                constraints.add(new RopeConstraint(newParticle, nearest));
+            }
         }
     }
 

@@ -13,6 +13,7 @@ public class DistanceConstraint implements Constraint {
     private double force;
 
     private Color color;
+    private float greenValue = 1/360f * 120f;
 
     public DistanceConstraint(Particle a, Particle b) {
         this(a, b, a.getPosition().distance(b.getPosition()));
@@ -33,7 +34,7 @@ public class DistanceConstraint implements Constraint {
         this.force = (currentDistance - distance) / 2;
 
         //todo monkey code not working, please fix future me :D
-        float hue = 1 / 360f * 120f;
+        float hue = greenValue;
 
         if (force > 0) {
             hue = (float) (1 / 360f * (120f - (10 * force)));
@@ -42,8 +43,8 @@ public class DistanceConstraint implements Constraint {
             hue = 0;
         }
 
-        if (hue > 1 / 360f * 120f) {
-            hue = 1 / 360f * 120f;
+        if (hue > greenValue) {
+            hue = greenValue;
         }
 
         Color color = Color.getHSBColor(hue, 1, 1);
