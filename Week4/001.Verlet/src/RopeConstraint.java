@@ -4,8 +4,9 @@ import org.jfree.fx.FXGraphics2D;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 
-public class RopeConstraint implements Constraint {
+public class RopeConstraint implements Constraint, Serializable {
 
     private double distance;
     private Particle a;

@@ -1,6 +1,7 @@
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,12 +12,16 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import javax.annotation.Resources;
 
 public class VerletEngine extends Application {
 
@@ -29,6 +34,30 @@ public class VerletEngine extends Application {
     public void start(Stage stage) throws Exception {
         BorderPane mainPane = new BorderPane();
         canvas = new ResizableCanvas(g -> draw(g), mainPane);
+
+        Button doekButton = new Button("doek");
+        Button saveButton = new Button("save");
+        Button loadButton = new Button("load");
+
+        HBox hBox = new HBox(10, doekButton, saveButton, loadButton);
+        doekButton.setOnAction(event -> drawDoek());
+        saveButton.setOnAction(event -> {
+            try {
+                save();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+        loadButton.setOnAction(event -> {
+            try {
+                load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        });
+        mainPane.setTop(hBox);
         mainPane.setCenter(canvas);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
         new AnimationTimer() {
@@ -55,6 +84,37 @@ public class VerletEngine extends Application {
         stage.setTitle("Verlet Engine");
         stage.show();
         draw(g2d);
+    }
+
+    private void load() throws IOException, ClassNotFoundException {
+        File file = new File("saveParticlesFile.txt");
+        ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(file));
+        this.particles = (ArrayList<Particle>) objectInputStream.readObject();
+
+        File file2 = new File("saveConstraintsFile.txt");
+        objectInputStream = new ObjectInputStream(new FileInputStream(file2));
+        this.constraints = (ArrayList<Constraint>) objectInputStream.readObject();
+
+    }
+
+    private void save() throws IOException {
+        File file = new File("saveParticlesFile.txt");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(file));
+
+        objectOutputStream.writeObject(this.particles);
+        objectOutputStream.close();
+
+        File file2 = new File("saveConstraintsFile.txt");
+        objectOutputStream = new ObjectOutputStream(new FileOutputStream(file2));
+
+        objectOutputStream.writeObject(this.constraints);
+        objectOutputStream.close();
+    }
+
+    private void drawDoek() {
+        particles.clear();
+        constraints.clear();
+
     }
 
     public void init() {
@@ -127,10 +187,10 @@ public class VerletEngine extends Application {
             constraints.clear();
             init();
         } else {
-            if (e.isControlDown()){
+            if (e.isControlDown()) {
                 constraints.add(new PositionConstraint(newParticle));
             }
-            if (e.isShiftDown()){
+            if (e.isShiftDown()) {
                 particles.add(newParticle);
                 constraints.add(new RopeConstraint(newParticle, nearest));
             }
