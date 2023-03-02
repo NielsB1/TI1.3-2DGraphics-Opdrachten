@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.io.Serializable;
+import java.util.Collection;
 
 public class DistanceConstraint implements Constraint, Serializable {
 

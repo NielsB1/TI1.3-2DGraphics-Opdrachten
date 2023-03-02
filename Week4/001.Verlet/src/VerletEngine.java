@@ -13,10 +13,12 @@ import static javafx.application.Application.launch;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
@@ -30,6 +32,8 @@ public class VerletEngine extends Application {
     private ArrayList<Constraint> constraints = new ArrayList<>();
     private PositionConstraint mouseConstraint = new PositionConstraint(null);
 
+    private boolean showControls = false;
+
     @Override
     public void start(Stage stage) throws Exception {
         BorderPane mainPane = new BorderPane();
@@ -38,8 +42,13 @@ public class VerletEngine extends Application {
         Button doekButton = new Button("doek");
         Button saveButton = new Button("save");
         Button loadButton = new Button("load");
+        Button controlsButton = new Button("toggle controls");
 
-        HBox hBox = new HBox(10, doekButton, saveButton, loadButton);
+
+        Label label = new Label("Controls:\nLeft click: ball with one line\nLeft click + CTRL: static ball\nLeft click + SHIFT: ball with rope line\nRight click: ball with two lines\nRight click + CTRL: ball with 2 line(same length)\nRight click + SHIFT: line\n\n--SAVE AND LOAD BUTTONS DON'T WORK--");
+        label.setFont(Font.font(16));
+
+        HBox hBox = new HBox(10, doekButton, saveButton, loadButton, controlsButton);
         doekButton.setOnAction(event -> drawDoek());
         saveButton.setOnAction(event -> {
             try {
@@ -56,6 +65,15 @@ public class VerletEngine extends Application {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+        });
+
+        controlsButton.setOnAction(event -> {
+            if (!showControls) {
+                mainPane.setRight(label);
+            } else {
+                mainPane.setRight(null);
+            }
+            showControls = !showControls;
         });
         mainPane.setTop(hBox);
         mainPane.setCenter(canvas);
@@ -114,7 +132,43 @@ public class VerletEngine extends Application {
     private void drawDoek() {
         particles.clear();
         constraints.clear();
+        constraints.add(mouseConstraint);
+        int width = 16;
+        int height = 9;
 
+        ArrayList<Particle> topRow = new ArrayList<>();
+        for (int i = 0; i < width; i++) {
+            Particle particle = new Particle(new Point2D.Double(100 + (100 * i), 100));
+            PositionConstraint positionConstraint = new PositionConstraint(particle);
+            if (topRow.size() > 0) {
+                DistanceConstraint distanceConstraint = new DistanceConstraint(particle, topRow.get(i - 1));
+                constraints.add(distanceConstraint);
+            }
+            topRow.add(particle);
+            constraints.add(positionConstraint);
+        }
+        particles.addAll(topRow);
+
+        ArrayList<Particle> previousRow;
+        previousRow = topRow;
+        ArrayList<Particle> currentRow = new ArrayList<>();
+        for (int y = 0; y < height - 1; y++) {
+            for (int x = 0; x < width; x++) {
+                Particle particle = new Particle(new Point2D.Double(100 + (100 * x), 200 + (100 * y)));
+                DistanceConstraint distanceConstraint2 = new DistanceConstraint(particle, previousRow.get(x));
+                constraints.add(distanceConstraint2);
+                if (currentRow.size() > 0) {
+                    DistanceConstraint distanceConstraint = new DistanceConstraint(particle, currentRow.get(x - 1));
+                    constraints.add(distanceConstraint);
+                }
+                currentRow.add(particle);
+            }
+            particles.addAll(currentRow);
+
+            previousRow.clear();
+            previousRow.addAll(currentRow);
+            currentRow.clear();
+        }
     }
 
     public void init() {
