@@ -4,11 +4,17 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.DetectResult;
 import org.dyn4j.dynamics.World;
+import org.dyn4j.dynamics.joint.DistanceJoint;
 import org.dyn4j.dynamics.joint.MotorJoint;
 import org.dyn4j.geometry.*;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -19,41 +25,35 @@ import java.util.List;
  * Created by johan on 2017-03-08.
  */
 public class MousePicker {
-
     private Point2D mousePos = null;
 
     private Body body;
     private MotorJoint joint;
 
     public MousePicker(Node node) {
-        EventHandler<? super MouseEvent> oldMouseClicked = node.getOnMouseClicked();
+        EventHandler<? super MouseEvent> oldMousePressed = node.getOnMousePressed();
         EventHandler<? super MouseEvent> oldMouseReleased = node.getOnMouseReleased();
         EventHandler<? super MouseEvent> oldMouseDragged = node.getOnMouseDragged();
 
-        node.setOnMouseClicked(e -> {
-            if (oldMouseClicked != null) {
-                oldMouseClicked.handle(e);
-            }
-            if (e.getButton() == MouseButton.PRIMARY) {
-                this.mousePos = new Point2D.Double(e.getX(), e.getY());
-            }
+        node.setOnMousePressed(e -> {
+            if (oldMousePressed != null)
+                oldMousePressed.handle(e);
         });
 
         node.setOnMouseReleased(e -> {
-            if (oldMouseReleased != null) {
+            if (oldMouseReleased != null)
                 oldMouseReleased.handle(e);
-            }
             this.mousePos = null;
         });
 
         node.setOnMouseDragged(e -> {
-            if (oldMouseDragged != null) {
+            if (oldMouseDragged != null)
                 oldMouseDragged.handle(e);
-            }
             this.mousePos = new Point2D.Double(e.getX(), e.getY());
         });
 
     }
+
 
     public void update(World world, AffineTransform transform, double scale) {
         if (mousePos == null) {
@@ -71,6 +71,7 @@ public class MousePicker {
             localMouse = new Point2D.Double(localMouse.getX() / scale, localMouse.getY() / -scale);
 
             if (body == null && joint == null) {
+
                 Convex convex = Geometry.createCircle(0.1);
                 Transform tx = new Transform();
                 tx.translate(localMouse.getX(), localMouse.getY());
@@ -81,10 +82,10 @@ public class MousePicker {
                 boolean detect = world.detect(
                         convex,
                         tx,
-                        null, // no, don't filter anything using the Filters
-                        false, // include sensor fixtures
-                        false, // include inactive bodies
-                        false, // we don't need collision info
+                        null,      // no, don't filter anything using the Filters
+                        false,      // include sensor fixtures
+                        false,      // include inactive bodies
+                        false,      // we don't need collision info
                         results);
 
                 if (detect) {
