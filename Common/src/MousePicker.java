@@ -26,9 +26,12 @@ import java.util.List;
  */
 public class MousePicker {
     private Point2D mousePos = null;
+    private Point2D lastPos = null;
 
     private Body body;
     private MotorJoint joint;
+    private AffineTransform transform;
+    private Body lastBody = null;
 
     public MousePicker(Node node) {
         EventHandler<? super MouseEvent> oldMousePressed = node.getOnMousePressed();
@@ -38,11 +41,14 @@ public class MousePicker {
         node.setOnMousePressed(e -> {
             if (oldMousePressed != null)
                 oldMousePressed.handle(e);
+            this.mousePos = new Point2D.Double(e.getX(), e.getY());
+            lastPos = mousePos;
         });
 
         node.setOnMouseReleased(e -> {
             if (oldMouseReleased != null)
                 oldMouseReleased.handle(e);
+            lastPos = mousePos;
             this.mousePos = null;
         });
 
@@ -50,12 +56,14 @@ public class MousePicker {
             if (oldMouseDragged != null)
                 oldMouseDragged.handle(e);
             this.mousePos = new Point2D.Double(e.getX(), e.getY());
+            lastPos = mousePos;
         });
 
     }
 
 
     public void update(World world, AffineTransform transform, double scale) {
+        this.transform = transform;
         if (mousePos == null) {
             if (body != null) {
                 world.removeBody(body);
@@ -90,7 +98,7 @@ public class MousePicker {
 
                 if (detect) {
                     Body target = results.get(0).getBody();
-
+                    lastBody = target;
                     target.setAutoSleepingEnabled(false);
                     target.setAsleep(false);
                     body = new Body();
@@ -116,4 +124,17 @@ public class MousePicker {
         }
     }
 
+    public Point2D getMousePos() {
+        Point2D localMouse = null;
+        try {
+            localMouse = transform.inverseTransform(lastPos, null);
+        } catch (NoninvertibleTransformException e) {
+            throw new RuntimeException(e);
+        }
+        return localMouse;
+    }
+
+    public Body getBody() {
+        return lastBody;
+    }
 }
