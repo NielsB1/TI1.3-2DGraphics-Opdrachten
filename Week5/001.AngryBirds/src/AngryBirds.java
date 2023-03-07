@@ -89,7 +89,7 @@ public class AngryBirds extends Application {
         }.start();
 
         stage.setScene(new Scene(mainPane, 1920, 1080));
-        stage.setTitle("Angry Birds");
+        stage.setTitle("Angry Monkey");
         stage.show();
         draw(g2d);
     }
@@ -181,7 +181,7 @@ public class AngryBirds extends Application {
 
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
         graphics.scale(1, -1);
-        graphics.setColor(Color.getHSBColor(360 / 360f, 0.57f, 0.6f));
+        graphics.setColor(Color.getHSBColor(360 / 340f, 0.57f, 0.8f));
 
         if (!ballThrown) {
             if (mousePicker.getBody() != null && mousePicker.getMousePos() != null) {
