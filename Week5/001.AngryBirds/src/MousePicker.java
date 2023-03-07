@@ -18,6 +18,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -32,8 +33,11 @@ public class MousePicker {
     private MotorJoint joint;
     private AffineTransform transform;
     private Body lastBody = null;
+    private AngryBirds angryBirds;
 
-    public MousePicker(Node node) {
+    public MousePicker(Node node, AngryBirds angryBirds) throws IOException {
+        this.angryBirds = angryBirds;
+
         EventHandler<? super MouseEvent> oldMousePressed = node.getOnMousePressed();
         EventHandler<? super MouseEvent> oldMouseReleased = node.getOnMouseReleased();
         EventHandler<? super MouseEvent> oldMouseDragged = node.getOnMouseDragged();
@@ -69,6 +73,7 @@ public class MousePicker {
                 world.removeBody(body);
                 world.removeJoint(joint);
                 body = null;
+                lastBody = null;
                 joint = null;
             }
             return;
@@ -98,26 +103,30 @@ public class MousePicker {
 
                 if (detect) {
                     Body target = results.get(0).getBody();
-                    lastBody = target;
-                    target.setAutoSleepingEnabled(false);
-                    target.setAsleep(false);
-                    body = new Body();
-                    body.setMass(MassType.INFINITE);
-                    body.addFixture(convex);
-                    body.getTransform().setTranslation(localMouse.getX(), localMouse.getY());
-                    world.addBody(body);
+                    if (!angryBirds.getBoxes().contains(target) && !angryBirds.isBallThrown()) {
+                        lastBody = target;
+                        target.setAutoSleepingEnabled(false);
+                        target.setAsleep(false);
+                        body = new Body();
+                        body.setMass(MassType.INFINITE);
+                        body.addFixture(convex);
+                        body.getTransform().setTranslation(localMouse.getX(), localMouse.getY());
+                        world.addBody(body);
 
-                    joint = new MotorJoint(target, body);
-                    joint.setCollisionAllowed(false);
-                    joint.setMaximumForce(1000.0);
-                    joint.setMaximumTorque(0.01);
+                        joint = new MotorJoint(target, body);
+                        joint.setCollisionAllowed(false);
+                        joint.setMaximumForce(1000.0);
+                        joint.setMaximumTorque(0.01);
 
-                    world.addJoint(joint);
+                        world.addJoint(joint);
+                    }
                 }
             }
 
             if (body != null) {
-                body.getTransform().setTranslation(localMouse.getX(), localMouse.getY());
+//                if (!angryBirds.getBoxes().contains(lastBody) && !angryBirds.isBallThrown()) {
+                    body.getTransform().setTranslation(localMouse.getX(), localMouse.getY());
+//                }
             }
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
@@ -126,15 +135,25 @@ public class MousePicker {
 
     public Point2D getMousePos() {
         Point2D localMouse = null;
-        try {
-            localMouse = transform.inverseTransform(lastPos, null);
-        } catch (NoninvertibleTransformException e) {
-            throw new RuntimeException(e);
-        }
-        return localMouse;
+        if (lastPos != null) {
+            try {
+                localMouse = transform.inverseTransform(lastPos, null);
+            } catch (NoninvertibleTransformException e) {
+                throw new RuntimeException(e);
+            }
+            return localMouse;
+        } else return null;
+    }
+
+    public void setMousePos(Point2D mousePos) {
+        this.lastPos = mousePos;
     }
 
     public Body getBody() {
         return lastBody;
+    }
+
+    public Body getBody2() {
+        return body;
     }
 }

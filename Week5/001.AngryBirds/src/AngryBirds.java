@@ -15,6 +15,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.Force;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.dynamics.joint.PinJoint;
 import org.dyn4j.geometry.*;
@@ -42,7 +43,7 @@ public class AngryBirds extends Application {
     private ArrayList<Body> boxes = new ArrayList<>();
     private ArrayList<GameObject> boxesAsGameObjects = new ArrayList<>();
     private BufferedImage victoryImage;
-    private double victoryImageYPos = -700;
+    private double victoryImageYPos = -710;
 
     public AngryBirds() throws IOException {
     }
@@ -71,7 +72,7 @@ public class AngryBirds extends Application {
         });
 
         camera = new Camera(canvas, g -> draw(g), g2d);
-        mousePicker = new MousePicker(canvas);
+        mousePicker = new MousePicker(canvas, this);
 
         new AnimationTimer() {
             long last = -1;
@@ -180,6 +181,17 @@ public class AngryBirds extends Application {
 
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
         graphics.scale(1, -1);
+        graphics.setColor(Color.getHSBColor(360 / 360f, 0.57f, 0.6f));
+
+        if (!ballThrown) {
+            if (mousePicker.getBody() != null && mousePicker.getMousePos() != null) {
+                if (mousePicker.getBody().equals(ball)) {
+                    graphics.drawLine((int) mousePicker.getMousePos().getX(), (int) -mousePicker.getMousePos().getY(), -700, -280);
+                    graphics.drawLine((int) mousePicker.getMousePos().getX(), (int) -mousePicker.getMousePos().getY(), -740, -285);
+                }
+            }
+
+        }
 
         for (GameObject go : gameObjects) {
             go.draw(graphics);
@@ -190,7 +202,7 @@ public class AngryBirds extends Application {
             DebugDraw.draw(graphics, world, 100);
         }
 
-        graphics.drawImage(victoryImage, (victoryImage.getWidth() / 2) * -1, (int) victoryImageYPos, victoryImage.getWidth(), victoryImage.getHeight(), null);
+        graphics.drawImage(victoryImage, (victoryImage.getWidth()) * -1, (int) victoryImageYPos, victoryImage.getWidth() * 2, victoryImage.getHeight() * 2, null);
         graphics.setTransform(originalTransform);
     }
 
@@ -198,35 +210,42 @@ public class AngryBirds extends Application {
         if (wonGame) {
             victoryImageYPos += 4;
             if (victoryImageYPos > 1000) {
-                victoryImageYPos = -700;
+                victoryImageYPos = -710;
                 wonGame = false;
             }
         }
-
-
-        if (mousePicker.getBody() != null) {
-            if (mousePicker.getBody().equals(ball)) {
-
-                if (ballThrown) {
-                    if (ball.getChangeInPosition().x < 0.0005 && ball.getChangeInPosition().x > -0.0005 && ball.getChangeInPosition().y < 0.0005 && ball.getChangeInPosition().x > -0.0005 && ball.getForce().equals(new Vector2(0, 0))) {
-                        ball.getTransform().setTranslation(catapult.getTransform().getTranslation());
-                        world.addJoint(catapultJoint);
-                        ballThrown = false;
-                    }
-                }
-
-                if (catapultReleased) {
-                    System.out.println(catapult.getTransform().getTranslation() + "--" + mousePicker.getMousePos());
-
-                    Vector2 ballToCatapult = new Vector2(-728, 282).subtract(new Vector2(mousePicker.getMousePos().getX(), mousePicker.getMousePos().getY()));
-                    ballToCatapult.set(ballToCatapult.x, ballToCatapult.y * -1);
-                    System.out.println(ballToCatapult);
-                    double forceMagnitude = 25.0;
-                    ball.applyForce(ballToCatapult.product(forceMagnitude));
-                    ballThrown = true;
-                    catapultReleased = false;
-                }
+        if (ballThrown) {
+            if (ball.getChangeInPosition().x < 0.0005 && ball.getChangeInPosition().x > -0.0005 && ball.getChangeInPosition().y < 0.0005 && ball.getChangeInPosition().x > -0.0005 && ball.getForce().equals(new Vector2(0, 0))) {
+                ball.getTransform().setTranslation(catapult.getTransform().getTranslation());
+                world.addJoint(catapultJoint);
+                ballThrown = false;
             }
+        }
+
+        if (catapultReleased) {
+            Vector2 ballToCatapult = new Vector2(-728, 282).subtract(new Vector2(mousePicker.getMousePos().getX(), mousePicker.getMousePos().getY()));
+            ballToCatapult.set(ballToCatapult.x, ballToCatapult.y * -1);
+            double forceMagnitude = 25.0;
+            Vector2 force = ballToCatapult.product(forceMagnitude);
+            System.out.println(force);
+
+            if (force.x > 7000){
+                force.set(7000, force.y);
+            } else if (force.x < -7000){
+                force.set(-7000, force.y);
+            }
+
+            if (force.y > 7000){
+                force.set(force.x, 7000);
+            } else if (force.y < -7000){
+                force.set(force.x, -7000);
+            }
+
+            ball.applyForce(force);
+            ball.applyImpulse(-0.002);
+            ballThrown = true;
+            mousePicker.setMousePos(null);
+            catapultReleased = false;
         }
 
 
@@ -258,8 +277,21 @@ public class AngryBirds extends Application {
     }
 
     public void throwMonkey() {
-        world.removeJoint(catapultJoint);
+
         catapultReleased = true;
+        world.removeJoint(catapultJoint);
+    }
+
+    public Body getBall() {
+        return ball;
+    }
+
+    public boolean isBallThrown() {
+        return ballThrown;
+    }
+
+    public ArrayList<Body> getBoxes() {
+        return boxes;
     }
 }
 
