@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -15,7 +16,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
-import org.dyn4j.dynamics.Force;
 import org.dyn4j.dynamics.World;
 import org.dyn4j.dynamics.joint.PinJoint;
 import org.dyn4j.geometry.*;
@@ -23,6 +23,7 @@ import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 
 public class AngryBirds extends Application {
 
@@ -73,6 +74,16 @@ public class AngryBirds extends Application {
 
         camera = new Camera(canvas, g -> draw(g), g2d);
         mousePicker = new MousePicker(canvas, this);
+
+        try {
+            File soundFile = new File(String.valueOf(getClass().getResource("MonkeySong.wav")));
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         new AnimationTimer() {
             long last = -1;
@@ -229,15 +240,15 @@ public class AngryBirds extends Application {
             Vector2 force = ballToCatapult.product(forceMagnitude);
             System.out.println(force);
 
-            if (force.x > 7000){
+            if (force.x > 7000) {
                 force.set(7000, force.y);
-            } else if (force.x < -7000){
+            } else if (force.x < -7000) {
                 force.set(-7000, force.y);
             }
 
-            if (force.y > 7000){
+            if (force.y > 7000) {
                 force.set(force.x, 7000);
-            } else if (force.y < -7000){
+            } else if (force.y < -7000) {
                 force.set(force.x, -7000);
             }
 
