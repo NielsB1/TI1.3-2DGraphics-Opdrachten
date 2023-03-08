@@ -3,7 +3,11 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -14,6 +18,8 @@ import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.World;
@@ -21,6 +27,9 @@ import org.dyn4j.dynamics.joint.PinJoint;
 import org.dyn4j.geometry.*;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+import sun.applet.Main;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
@@ -51,7 +60,6 @@ public class AngryBirds extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-
         BorderPane mainPane = new BorderPane();
 
         // Add debug button
@@ -75,15 +83,7 @@ public class AngryBirds extends Application {
         camera = new Camera(canvas, g -> draw(g), g2d);
         mousePicker = new MousePicker(canvas, this);
 
-        try {
-            File soundFile = new File(String.valueOf(getClass().getResource("MonkeySong.wav")));
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(soundFile);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioIn);
-            clip.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         new AnimationTimer() {
             long last = -1;
@@ -103,13 +103,14 @@ public class AngryBirds extends Application {
         stage.setTitle("Angry Monkey");
         stage.show();
         draw(g2d);
+        music();
     }
 
     public void init() {
+
         debugSelected = false;
         catapultReleased = false;
         ballThrown = false;
-
         try {
             victoryImage = ImageIO.read(getClass().getResource("victory.png"));
         } catch (IOException e) {
@@ -291,6 +292,14 @@ public class AngryBirds extends Application {
 
         catapultReleased = true;
         world.removeJoint(catapultJoint);
+    }
+
+    public void music() {
+        String fileName = "MonkeySong.wav";
+        Media hit = new Media(getClass().getResource("/" + fileName).toExternalForm());
+        MediaPlayer mediaPlayer = new MediaPlayer(hit);
+        mediaPlayer.setVolume(0.1);
+        mediaPlayer.play();
     }
 
     public Body getBall() {
