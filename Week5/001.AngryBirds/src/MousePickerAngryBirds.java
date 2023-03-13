@@ -1,20 +1,13 @@
 
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import org.dyn4j.dynamics.Body;
-import org.dyn4j.dynamics.BodyFixture;
 import org.dyn4j.dynamics.DetectResult;
 import org.dyn4j.dynamics.World;
-import org.dyn4j.dynamics.joint.DistanceJoint;
 import org.dyn4j.dynamics.joint.MotorJoint;
 import org.dyn4j.geometry.*;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -25,7 +18,7 @@ import java.util.List;
 /**
  * Created by johan on 2017-03-08.
  */
-public class MousePicker {
+public class MousePickerAngryBirds {
     private Point2D mousePos = null;
     private Point2D lastPos = null;
 
@@ -35,7 +28,7 @@ public class MousePicker {
     private Body lastBody = null;
     private AngryBirds angryBirds;
 
-    public MousePicker(Node node, AngryBirds angryBirds) throws IOException {
+    public MousePickerAngryBirds(Node node, AngryBirds angryBirds) throws IOException {
         this.angryBirds = angryBirds;
 
         EventHandler<? super MouseEvent> oldMousePressed = node.getOnMousePressed();

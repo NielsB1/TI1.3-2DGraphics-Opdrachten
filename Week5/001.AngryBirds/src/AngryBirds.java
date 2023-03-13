@@ -2,12 +2,7 @@
 import java.awt.*;
 import java.awt.geom.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import javafx.animation.AnimationTimer;
@@ -27,18 +22,14 @@ import org.dyn4j.dynamics.joint.PinJoint;
 import org.dyn4j.geometry.*;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
-import sun.applet.Main;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.*;
 
 public class AngryBirds extends Application {
 
     private ResizableCanvas canvas;
     private World world;
-    private MousePicker mousePicker;
+    private MousePickerAngryBirds mousePicker;
     private Camera camera;
     private boolean debugSelected;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
@@ -81,7 +72,7 @@ public class AngryBirds extends Application {
         });
 
         camera = new Camera(canvas, g -> draw(g), g2d);
-        mousePicker = new MousePicker(canvas, this);
+        mousePicker = new MousePickerAngryBirds(canvas, this);
 
 
 
