@@ -14,7 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.World;
+import org.dyn4j.dynamics.joint.Joint;
+import org.dyn4j.dynamics.joint.PinJoint;
 import org.dyn4j.geometry.Geometry;
+import org.dyn4j.geometry.Mass;
 import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
@@ -71,23 +74,22 @@ public class Eindopdracht extends Application {
         draw(g2d);
     }
 
+    private Body car;
+    private Body leftWheel;
+    private Body rightWheel;
+
     public void init() {
         world = new World();
-        world.setGravity(new Vector2(0, -9.8));
+        world.setGravity(new Vector2(0, -50));
 
         noiseMapGenerator = new NoiseMapGenerator();
-//        lines.add(new Line2D.Double(100, noiseMapGenerator.noise(0.1) * 5000, 200, noiseMapGenerator.noise(0.2) * 5000));
-//        lines.add(new Line2D.Double(200, noiseMapGenerator.noise(0.2) * 5000, 300, noiseMapGenerator.noise(0.3) * 5000));
-//        lines.add(new Line2D.Double(300, noiseMapGenerator.noise(0.3) * 5000, 400, noiseMapGenerator.noise(0.4) * 5000));
-//        lines.add(new Line2D.Double(400, noiseMapGenerator.noise(0.4) * 5000, 500, noiseMapGenerator.noise(0.5) * 5000));
-
         for (int i = 0; i < 10000; i+= 50) {
             lines.add(new Line2D.Double(i, noiseMapGenerator.noise(i/1000f) * 1000, i + 50, noiseMapGenerator.noise((i + 50) / 1000f) * 1000));
             Body line = new Body();
             Point2D topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i/1000f) * 1000);
-            Point2D bottemRight = new Point2D.Double(i + 50, noiseMapGenerator.noise((i + 50) / 1000f) * 1000);
+            Point2D bottomRight = new Point2D.Double(i + 50, noiseMapGenerator.noise((i + 50) / 1000f) * 1000);
             Vector2 v1 = new Vector2(((Point2D.Double) topLeft).x, ((Point2D.Double) topLeft).y);
-            Vector2 v2 = new Vector2(((Point2D.Double) bottemRight).x, ((Point2D.Double) bottemRight).y);
+            Vector2 v2 = new Vector2(((Point2D.Double) bottomRight).x, ((Point2D.Double) bottomRight).y);
             double y = v2.y + ((v1.y - v2.y) /2);
             double x = v1.x + 25;
             line.addFixture(Geometry.createRectangle(60, 10));
@@ -96,14 +98,37 @@ public class Eindopdracht extends Application {
             line.setMass(MassType.INFINITE);
             world.addBody(line);
         }
+        car = new Body();
+        car.addFixture(Geometry.createRectangle(100,40));
+        car.getTransform().setTranslation(-300, 100);
+        car.setMass(MassType.NORMAL);
+        world.addBody(car);
+
+        leftWheel = new Body();
+        leftWheel.addFixture(Geometry.createCircle(10));
+        leftWheel.getFixture(0).setFriction(10);
+        leftWheel.getTransform().setTranslation(-330, 80);
+        leftWheel.setMass(MassType.NORMAL);
+        world.addBody(leftWheel);
+
+        rightWheel = new Body();
+        rightWheel.addFixture(Geometry.createCircle(10));
+        rightWheel.getFixture(0).setFriction(10);
+        rightWheel.getTransform().setTranslation(-270, 80);
+        rightWheel.setMass(MassType.NORMAL);
+        world.addBody(rightWheel);
+
+        //todo make monkey springs works
+        Joint leftSpring = new PinJoint(leftWheel,car.getTransform().getTranslation(),10, 10, 10);
+        Joint rightSpring = new PinJoint(rightWheel,car.getTransform().getTranslation(),10, 10, 10);
 
 
-//        floor = new Body();
-//        floor.addFixture(Geometry.createRectangle(100, 1));
-//        floor.getFixture(0).setFriction(3);
-//        floor.getTransform().setTranslation(1, -5);
-//        floor.setMass(MassType.INFINITE);
-//        world.addBody(floor);
+        floor = new Body();
+        floor.addFixture(Geometry.createRectangle(2000, 10));
+        floor.getFixture(0).setFriction(3);
+        floor.getTransform().setTranslation(-1000, 0);
+        floor.setMass(MassType.INFINITE);
+        world.addBody(floor);
     }
 
     public void draw(FXGraphics2D graphics) {
