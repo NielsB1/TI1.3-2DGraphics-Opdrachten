@@ -79,8 +79,8 @@ public class Eindopdracht extends Application {
     private Body car;
     private Body leftWheel;
     private Body rightWheel;
-    private PinJoint leftSpring;
-    private PinJoint rightSpring;
+    private WheelJoint leftSpring;
+    private WheelJoint rightSpring;
     private Body leftSpringPoint;
     private Body rightSpringPoint;
 
@@ -122,13 +122,6 @@ public class Eindopdracht extends Application {
         leftSpringPoint.setMass(MassType.NORMAL);
 
         RevoluteJoint leftSpringToCar = new RevoluteJoint(leftSpringPoint, car, new Vector2(leftSpringPoint.getTransform().getTranslationX(), leftSpringPoint.getTransform().getTranslationY()));
-        leftSpringToCar.setLimitEnabled(true);
-        leftSpringToCar.setLimits(Math.toRadians(0.0), Math.toRadians(0.0));
-        leftSpringToCar.setReferenceAngle(Math.toRadians(0.0));
-        leftSpringToCar.setMotorEnabled(false);
-        leftSpringToCar.setMotorSpeed(Math.toRadians(0.0));
-        leftSpringToCar.setMaximumMotorTorque(0.0);
-        leftSpringToCar.setCollisionAllowed(false);
 
         world.addJoint(leftSpringToCar);
 //        world.addBody(leftSpringPoint);
@@ -142,7 +135,7 @@ public class Eindopdracht extends Application {
         gameObjects.add(new GameObject("Everything/Tire.png", leftWheel, new Vector2(leftWheel.getTransform().getTranslationX() + 2.5, leftWheel.getTransform().getTranslationY()), 0.85));
 
 
-        leftSpring = new PinJoint(leftWheel, leftSpringPoint.getTransform().getTranslation(), 1, 1, 50);
+        leftSpring = new WheelJoint(leftWheel, car, leftSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
 
 
         rightSpringPoint = new Body();
@@ -151,13 +144,6 @@ public class Eindopdracht extends Application {
         rightSpringPoint.setMass(MassType.NORMAL);
 
         RevoluteJoint rightSpringToCar = new RevoluteJoint(rightSpringPoint, car, new Vector2(rightSpringPoint.getTransform().getTranslationX(), rightSpringPoint.getTransform().getTranslationY()));
-        rightSpringToCar.setLimitEnabled(true);
-        rightSpringToCar.setLimits(Math.toRadians(0.0), Math.toRadians(0.0));
-        rightSpringToCar.setReferenceAngle(Math.toRadians(0.0));
-        rightSpringToCar.setMotorEnabled(false);
-        rightSpringToCar.setMotorSpeed(Math.toRadians(0.0));
-        rightSpringToCar.setMaximumMotorTorque(0.0);
-        rightSpringToCar.setCollisionAllowed(false);
 
         world.addJoint(rightSpringToCar);
 //        world.addBody(rightSpringPoint);
@@ -170,8 +156,7 @@ public class Eindopdracht extends Application {
         world.addBody(rightWheel);
         gameObjects.add(new GameObject("Everything/Tire.png", rightWheel, new Vector2(rightWheel.getTransform().getTranslationX() + 2.5, rightWheel.getTransform().getTranslationY()), 0.85));
 
-        rightSpring = new PinJoint(rightWheel, rightSpringPoint.getTransform().getTranslation(), 1, 1, 50);
-        rightSpring.setCollisionAllowed(true);
+        rightSpring = new WheelJoint(rightWheel, car, rightSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
 
         world.addJoint(leftSpring);
         world.addJoint(rightSpring);
@@ -215,8 +200,8 @@ public class Eindopdracht extends Application {
 
     public void update(double deltaTime) {
         world.update(deltaTime);
-        leftSpring.setTarget(leftSpringPoint.getTransform().getTranslation());
-        rightSpring.setTarget(rightSpringPoint.getTransform().getTranslation());
+        leftWheel.applyImpulse(-0.012);
+        rightWheel.applyImpulse(-0.012);
         mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
     }
 
