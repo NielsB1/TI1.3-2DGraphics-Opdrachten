@@ -37,6 +37,7 @@ public class Eindopdracht extends Application {
     private NoiseMapGenerator noiseMapGenerator;
     private ArrayList<Line2D> lines = new ArrayList<>();
     private boolean firstDraw = true;
+    private double scale = 100;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -177,6 +178,9 @@ public class Eindopdracht extends Application {
 
         AffineTransform originalTransform = graphics.getTransform();
 
+        Vector2 carPosition = car.getTransform().getTranslation();
+        camera.setCenter(carPosition.x * scale, carPosition.y * scale);
+
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
         graphics.scale(1, -1);
 
@@ -192,7 +196,7 @@ public class Eindopdracht extends Application {
 
         if (debugSelected) {
             graphics.setColor(Color.blue);
-            DebugDraw.draw(graphics, world, 100);
+            DebugDraw.draw(graphics, world, scale);
         }
 
         graphics.setTransform(originalTransform);
@@ -202,7 +206,7 @@ public class Eindopdracht extends Application {
         world.update(deltaTime);
         leftWheel.applyImpulse(-0.012);
         rightWheel.applyImpulse(-0.012);
-        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
+        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), scale);
     }
 
     public static void main(String[] args) {
