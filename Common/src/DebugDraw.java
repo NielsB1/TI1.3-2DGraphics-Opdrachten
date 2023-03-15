@@ -2,12 +2,12 @@
 import org.dyn4j.collision.Fixture;
 import org.dyn4j.dynamics.Body;
 import org.dyn4j.dynamics.World;
-import org.dyn4j.geometry.Circle;
-import org.dyn4j.geometry.Convex;
+import org.dyn4j.dynamics.joint.Joint;
+import org.dyn4j.geometry.*;
 import org.dyn4j.geometry.Polygon;
-import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 
+import java.awt.*;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
@@ -30,7 +30,6 @@ public class DebugDraw {
             for (Fixture f : b.getFixtures()) {
                 g2d.draw(AffineTransform.getScaleInstance(scale, scale).createTransformedShape(getShape(f.getShape(), scale)));
             }
-
             g2d.setTransform(originalTransform);
         }
     }
