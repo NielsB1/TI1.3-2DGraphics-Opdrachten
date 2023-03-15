@@ -91,18 +91,20 @@ public class Eindopdracht extends Application {
 
         noiseMapGenerator = new NoiseMapGenerator();
         int resolution = 50;
+        int amplitude = 1000;
+        double distance = 600;
         for (int i = 0; i < 10000; i += resolution) {
-            lines.add(new Line2D.Double(i, noiseMapGenerator.noise(i / 1000f) * 1000, i + resolution, noiseMapGenerator.noise((i + resolution) / 1000f) * 1000));
+            lines.add(new Line2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude, i + resolution, noiseMapGenerator.noise((i + resolution) / distance) * amplitude));
             Body line = new Body();
-            Point2D topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i / 1000f) * 1000);
-            Point2D bottomRight = new Point2D.Double(i + resolution, noiseMapGenerator.noise((i + resolution) / 1000f) * 1000);
-            Vector2 v1 = new Vector2(((Point2D.Double) topLeft).x, ((Point2D.Double) topLeft).y);
-            Vector2 v2 = new Vector2(((Point2D.Double) bottomRight).x, ((Point2D.Double) bottomRight).y);
+            Point2D.Double topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude);
+            Point2D.Double bottomRight = new Point2D.Double(i + resolution, noiseMapGenerator.noise((i + resolution) / distance) * amplitude);
+            Vector2 v1 = new Vector2(topLeft.x, topLeft.y);
+            Vector2 v2 = new Vector2(bottomRight.x, bottomRight.y);
             double y = v2.y + ((v1.y - v2.y) / 2);
             double x = v1.x + (resolution / 2f);
-            line.rotate(Math.atan((v2.y - v1.y) / (v2.x - v1.x)), new Vector2(x / 100, y / 100));
-            line.addFixture(Geometry.createRectangle((0.45 + (Math.abs(line.getTransform().getRotation()) / 3.5)) * (resolution / 50f), 0.05));
-            line.getTransform().setTranslation(x / 100, y / 100);
+            line.rotate(Math.atan((v2.y - v1.y) / (v2.x - v1.x)));
+            line.addFixture(Geometry.createRectangle((0.45 + (Math.abs(line.getTransform().getRotation()) / (3.5 / (amplitude / 1000f)) / (distance / 1000))) * ((resolution / 50f)), 0.05));
+            line.getTransform().setTranslation(x / scale, y / scale);
             line.setMass(MassType.INFINITE);
             world.addBody(line);
         }
