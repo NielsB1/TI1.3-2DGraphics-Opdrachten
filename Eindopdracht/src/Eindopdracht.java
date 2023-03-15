@@ -100,22 +100,22 @@ public class Eindopdracht extends Application {
             world.addBody(line);
         }
         car = new Body();
-        car.addFixture(Geometry.createRectangle(100, 40));
+        car.addFixture(Geometry.createRectangle(175, 60));
         car.getTransform().setTranslation(-300, 100);
         car.setMass(MassType.NORMAL);
         world.addBody(car);
 
         leftWheel = new Body();
-        leftWheel.addFixture(Geometry.createCircle(10));
+        leftWheel.addFixture(Geometry.createCircle(25));
         leftWheel.getFixture(0).setFriction(1);
-        leftWheel.getTransform().setTranslation(-330, 80);
+        leftWheel.getTransform().setTranslation(-330, 40);
         leftWheel.setMass(MassType.NORMAL);
         world.addBody(leftWheel);
 
         rightWheel = new Body();
-        rightWheel.addFixture(Geometry.createCircle(10));
+        rightWheel.addFixture(Geometry.createCircle(25));
         rightWheel.getFixture(0).setFriction(10);
-        rightWheel.getTransform().setTranslation(-270, 80);
+        rightWheel.getTransform().setTranslation(-270, 40);
         rightWheel.setMass(MassType.NORMAL);
         world.addBody(rightWheel);
 
