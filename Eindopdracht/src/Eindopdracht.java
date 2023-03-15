@@ -117,7 +117,7 @@ public class Eindopdracht extends Application {
 
         //todo make monkey springs works
         leftSpringPoint = new Body();
-//        leftSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
+        leftSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
         leftSpringPoint.getTransform().setTranslation(-3.85, 0.55);
         leftSpringPoint.setMass(MassType.NORMAL);
 
@@ -131,7 +131,7 @@ public class Eindopdracht extends Application {
         leftSpringToCar.setCollisionAllowed(false);
 
         world.addJoint(leftSpringToCar);
-        world.addBody(leftSpringPoint);
+//        world.addBody(leftSpringPoint);
 
         leftWheel = new Body();
         leftWheel.addFixture(Geometry.createCircle(.25));
@@ -142,11 +142,11 @@ public class Eindopdracht extends Application {
         gameObjects.add(new GameObject("Everything/Tire.png", leftWheel, new Vector2(leftWheel.getTransform().getTranslationX() + 2.5, leftWheel.getTransform().getTranslationY()), 0.85));
 
 
-        leftSpring = new PinJoint(leftWheel, leftSpringPoint.getTransform().getTranslation(), 10, 0.5, 50);
+        leftSpring = new PinJoint(leftWheel, leftSpringPoint.getTransform().getTranslation(), 1, 1, 50);
 
 
         rightSpringPoint = new Body();
-//        rightSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
+        rightSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
         rightSpringPoint.getTransform().setTranslation(-2.2, 0.55);
         rightSpringPoint.setMass(MassType.NORMAL);
 
@@ -160,7 +160,7 @@ public class Eindopdracht extends Application {
         rightSpringToCar.setCollisionAllowed(false);
 
         world.addJoint(rightSpringToCar);
-        world.addBody(rightSpringPoint);
+//        world.addBody(rightSpringPoint);
 
         rightWheel = new Body();
         rightWheel.addFixture(Geometry.createCircle(.25));
@@ -170,7 +170,8 @@ public class Eindopdracht extends Application {
         world.addBody(rightWheel);
         gameObjects.add(new GameObject("Everything/Tire.png", rightWheel, new Vector2(rightWheel.getTransform().getTranslationX() + 2.5, rightWheel.getTransform().getTranslationY()), 0.85));
 
-        rightSpring = new PinJoint(rightWheel, rightSpringPoint.getTransform().getTranslation(), 10, 0.5, 50);
+        rightSpring = new PinJoint(rightWheel, rightSpringPoint.getTransform().getTranslation(), 1, 1, 50);
+        rightSpring.setCollisionAllowed(true);
 
         world.addJoint(leftSpring);
         world.addJoint(rightSpring);
@@ -214,10 +215,9 @@ public class Eindopdracht extends Application {
 
     public void update(double deltaTime) {
         world.update(deltaTime);
-//        leftSpring.setTarget(leftSpringPoint.getTransform().getTranslation());
-//        rightSpring.setTarget(rightSpringPoint.getTransform().getTranslation());
+        leftSpring.setTarget(leftSpringPoint.getTransform().getTranslation());
+        rightSpring.setTarget(rightSpringPoint.getTransform().getTranslation());
         mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), 100);
-        car.applyForce(new Vector2(1, 1));
     }
 
     public static void main(String[] args) {
