@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.geom.*;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -85,27 +86,36 @@ public class Eindopdracht extends Application {
     private Body leftSpringPoint;
     private Body rightSpringPoint;
 
+    private ArrayList<Body> groundBodies = new ArrayList<>();
+
+    private int resolution = 20;
+    private int amplitude = 300;
+    private double distance = 1000;
+
     public void init() {
         world = new World();
         world.setGravity(new Vector2(0, -9.81));
 
-        noiseMapGenerator = new NoiseMapGenerator();
-        int resolution = 50;
-        int amplitude = 1000;
-        double distance = 600;
-        for (int i = 0; i < 10000; i += resolution) {
-            lines.add(new Line2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude, i + resolution, noiseMapGenerator.noise((i + resolution) / distance) * amplitude));
+        noiseMapGenerator = new NoiseMapGenerator(420);
+
+
+        for (int i = 0; i < (1000 * resolution); i += resolution) {
             Body line = new Body();
+
             Point2D.Double topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude);
             Point2D.Double bottomRight = new Point2D.Double(i + resolution, noiseMapGenerator.noise((i + resolution) / distance) * amplitude);
-            Vector2 v1 = new Vector2(topLeft.x, topLeft.y);
-            Vector2 v2 = new Vector2(bottomRight.x, bottomRight.y);
-            double y = v2.y + ((v1.y - v2.y) / 2);
-            double x = v1.x + (resolution / 2f);
-            line.rotate(Math.atan((v2.y - v1.y) / (v2.x - v1.x)));
-            line.addFixture(Geometry.createRectangle((0.45 + (Math.abs(line.getTransform().getRotation()) / (3.5 / (amplitude / 1000f)) / (distance / 1000))) * ((resolution / 50f)), 0.05));
+
+            lines.add(new Line2D.Double(topLeft, bottomRight));
+
+            double y = bottomRight.y + ((topLeft.y - bottomRight.y) / 2);
+            double x = topLeft.x + (resolution / 2f);
+            line.rotate(Math.atan((bottomRight.y - topLeft.y) / (bottomRight.x - topLeft.x)));
+
+            line.addFixture(Geometry.createRectangle((topLeft.distance(bottomRight) / scale) - 0.029, 0.01));
             line.getTransform().setTranslation(x / scale, y / scale);
             line.setMass(MassType.INFINITE);
+
+            groundBodies.add(line);
             world.addBody(line);
         }
         car = new Body();
@@ -118,20 +128,18 @@ public class Eindopdracht extends Application {
         gameObjects.add(new GameObject("Everything/Car.png", car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() - 10), 1));
 
 
-        //todo make monkey springs works
         leftSpringPoint = new Body();
         leftSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
-        leftSpringPoint.getTransform().setTranslation(-3.85, 0.55);
+        leftSpringPoint.getTransform().setTranslation(-3.85, 0.52);
         leftSpringPoint.setMass(MassType.NORMAL);
 
-        RevoluteJoint leftSpringToCar = new RevoluteJoint(leftSpringPoint, car, new Vector2(leftSpringPoint.getTransform().getTranslationX(), leftSpringPoint.getTransform().getTranslationY()));
+        WeldJoint leftSpringToCar = new WeldJoint(leftSpringPoint, car, new Vector2(leftSpringPoint.getTransform().getTranslationX(), leftSpringPoint.getTransform().getTranslationY()));
 
         world.addJoint(leftSpringToCar);
-//        world.addBody(leftSpringPoint);
 
         leftWheel = new Body();
         leftWheel.addFixture(Geometry.createCircle(.25));
-        leftWheel.getFixture(0).setFriction(10);
+        leftWheel.getFixture(0).setFriction(1);
         leftWheel.getTransform().setTranslation(leftSpringPoint.getTransform().getTranslation());
         leftWheel.setMass(MassType.NORMAL);
         world.addBody(leftWheel);
@@ -139,35 +147,39 @@ public class Eindopdracht extends Application {
 
 
         leftSpring = new WheelJoint(leftWheel, car, leftSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
+        leftSpring.setDampingRatio(0.3);
 
 
         rightSpringPoint = new Body();
         rightSpringPoint.addFixture(Geometry.createRectangle(0.05, 0.05));
-        rightSpringPoint.getTransform().setTranslation(-2.2, 0.55);
+        rightSpringPoint.getTransform().setTranslation(-2.2, 0.52);
         rightSpringPoint.setMass(MassType.NORMAL);
 
-        RevoluteJoint rightSpringToCar = new RevoluteJoint(rightSpringPoint, car, new Vector2(rightSpringPoint.getTransform().getTranslationX(), rightSpringPoint.getTransform().getTranslationY()));
+        WeldJoint rightSpringToCar = new WeldJoint(rightSpringPoint, car, new Vector2(rightSpringPoint.getTransform().getTranslationX(), rightSpringPoint.getTransform().getTranslationY()));
 
         world.addJoint(rightSpringToCar);
-//        world.addBody(rightSpringPoint);
 
         rightWheel = new Body();
         rightWheel.addFixture(Geometry.createCircle(.25));
-        rightWheel.getFixture(0).setFriction(10);
+        rightWheel.getFixture(0).setFriction(1);
         rightWheel.getTransform().setTranslation(rightSpringPoint.getTransform().getTranslation());
         rightWheel.setMass(MassType.NORMAL);
         world.addBody(rightWheel);
         gameObjects.add(new GameObject("Everything/Tire.png", rightWheel, new Vector2(rightWheel.getTransform().getTranslationX() + 2.5, rightWheel.getTransform().getTranslationY()), 0.85));
 
         rightSpring = new WheelJoint(rightWheel, car, rightSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
+        rightSpring.setDampingRatio(0.3);
+
+        leftSpring.setFrequency(8);
+        rightSpring.setFrequency(8);
 
         world.addJoint(leftSpring);
         world.addJoint(rightSpring);
 
 
         floor = new Body();
-        floor.addFixture(Geometry.createRectangle(20.00, .05));
-        floor.getFixture(0).setFriction(3);
+        floor.addFixture(Geometry.createRectangle(20.00, .01));
+        floor.getFixture(0).setFriction(1);
         floor.getTransform().setTranslation(-10.00, 0);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
@@ -206,9 +218,98 @@ public class Eindopdracht extends Application {
 
     public void update(double deltaTime) {
         world.update(deltaTime);
-        leftWheel.applyImpulse(-0.012);
-        rightWheel.applyImpulse(-0.012);
+        leftWheel.applyImpulse(-0.008);
+        rightWheel.applyImpulse(-0.008);
         mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), scale);
+
+        if (groundBodies.get((groundBodies.size() / 3) * 2).getTransform().getTranslationX() < car.getTransform().getTranslationX()) {
+//            System.out.println("ik moet meer maken" + "\tpositie: " + car.getTransform().getTranslationX());
+            generateGround(100);
+        } else if (groundBodies.get(groundBodies.size() / 3).getTransform().getTranslationX() > car.getTransform().getTranslationX()
+                && car.getTransform().getTranslationX() > 100) {
+
+//            System.out.println("ik moet vorige genereren" + "\tpositie: " + car.getTransform().getTranslationX());
+            generatePreviousGround();
+        }
+    }
+
+    public void generateGround(int amount) {
+        int i = 0;
+        Iterator<Body> iterator = groundBodies.iterator();
+        Iterator<Line2D> iter = lines.iterator();
+        while (iterator.hasNext()) {
+            Body groundBody = iterator.next();
+            Line2D line = iter.next();
+            if (i < amount) {
+                world.removeBody(groundBody);
+                iterator.remove();
+                iter.remove();
+            }
+            i++;
+        }
+
+
+        System.out.println(groundBodies.get(groundBodies.size() - 1).getTransform().getTranslationX() * scale);
+        int startIndex = (int) ((groundBodies.get(groundBodies.size() - 1).getTransform().getTranslationX() * scale) + resolution / 2);
+
+        for (int j = startIndex; j < startIndex + (amount * resolution); j += resolution) {
+
+            Body line = new Body();
+
+            Point2D.Double topLeft = new Point2D.Double(j, noiseMapGenerator.noise(j / distance) * amplitude);
+            Point2D.Double bottomRight = new Point2D.Double(j + resolution, noiseMapGenerator.noise((j + resolution) / distance) * amplitude);
+
+            lines.add(new Line2D.Double(topLeft, bottomRight));
+
+            double y = bottomRight.y + ((topLeft.y - bottomRight.y) / 2);
+            double x = topLeft.x + (resolution / 2f);
+            line.rotate(Math.atan((bottomRight.y - topLeft.y) / (bottomRight.x - topLeft.x)));
+
+            line.addFixture(Geometry.createRectangle((topLeft.distance(bottomRight) / scale) - 0.029, 0.01));
+            line.getTransform().setTranslation(x / scale, y / scale);
+            line.setMass(MassType.INFINITE);
+
+            groundBodies.add(line);
+            world.addBody(line);
+        }
+    }
+
+    public void generatePreviousGround() {
+
+        //todo maybe fix later
+//        int i = 0;
+//        Iterator<Body> iterator = groundBodies.iterator();
+//        while (iterator.hasNext()) {
+//            Body groundBody = iterator.next();
+//            if (i > groundBodies.size() - 101) {
+//                world.removeBody(groundBody);
+//                iterator.remove();
+//            }
+//            i++;
+//        }
+//        System.out.println(groundBodies.get(0).getTransform().getTranslationX() * scale);
+//        int startIndex = (int) ((groundBodies.get(0).getTransform().getTranslationX() * scale) + resolution / 2);
+//        for (int j = startIndex; j < startIndex + (100 * resolution); j += resolution) {
+//
+//            Body line = new Body();
+//
+//            Point2D.Double topLeft = new Point2D.Double(j, noiseMapGenerator.noise(j / distance) * amplitude);
+//            Point2D.Double bottomRight = new Point2D.Double(j + resolution, noiseMapGenerator.noise((j + resolution) / distance) * amplitude);
+//
+//            lines.add(new Line2D.Double(topLeft, bottomRight));
+//
+//            double y = bottomRight.y + ((topLeft.y - bottomRight.y) / 2);
+//            double x = topLeft.x + (resolution / 2f);
+//            line.rotate(Math.atan((bottomRight.y - topLeft.y) / (bottomRight.x - topLeft.x)));
+//
+//            line.addFixture(Geometry.createRectangle((topLeft.distance(bottomRight) / scale) - 0.029, 0.01));
+//            line.getTransform().setTranslation(x / scale, y / scale);
+//            line.setMass(MassType.INFINITE);
+//
+//            groundBodies.add(line);
+//            world.addBody(line);
+//        }
+
     }
 
     public static void main(String[] args) {
