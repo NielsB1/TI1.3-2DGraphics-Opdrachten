@@ -133,6 +133,7 @@ public class Eindopdracht extends Application {
             groundBodies.add(line);
             world.addBody(line);
         }
+
         car = new Body();
         car.addFixture(Geometry.createRectangle(2.4, .30));
         car.addFixture(Geometry.createRectangle(1, .65));
@@ -140,6 +141,19 @@ public class Eindopdracht extends Application {
         car.getTransform().setTranslation(-3, 1);
         car.setMass(MassType.NORMAL);
         world.addBody(car);
+
+        driverHead = new Body();
+        driverHead.addFixture(Geometry.createRectangle(0.4, 0.25));
+        driverHead.setMass(MassType.NORMAL);
+        driverHead.getTransform().setTranslation(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() + 0.5);
+        world.addBody(driverHead);
+
+
+
+        gameObjects.add(new GameObject("Everything/monkeyHead.png", driverHead, new Vector2(driverHead.getTransform().getTranslationX() - 20, driverHead.getTransform().getTranslationY() + 75), 0.2));
+
+
+
         gameObjects.add(new GameObject("Everything/Car.png", car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() - 10), 1));
 
 
@@ -154,7 +168,7 @@ public class Eindopdracht extends Application {
 
         leftWheel = new Body();
         leftWheel.addFixture(Geometry.createCircle(.25));
-        leftWheel.getFixture(0).setFriction(1);
+        leftWheel.getFixture(0).setFriction(25);
         leftWheel.getTransform().setTranslation(leftSpringPoint.getTransform().getTranslation());
         leftWheel.setMass(MassType.NORMAL);
         world.addBody(leftWheel);
@@ -162,7 +176,7 @@ public class Eindopdracht extends Application {
 
 
         leftSpring = new WheelJoint(leftWheel, car, leftSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
-        leftSpring.setDampingRatio(0.3);
+        leftSpring.setDampingRatio(0.6);
 
 
         rightSpringPoint = new Body();
@@ -176,14 +190,14 @@ public class Eindopdracht extends Application {
 
         rightWheel = new Body();
         rightWheel.addFixture(Geometry.createCircle(.25));
-        rightWheel.getFixture(0).setFriction(1);
+        rightWheel.getFixture(0).setFriction(25);
         rightWheel.getTransform().setTranslation(rightSpringPoint.getTransform().getTranslation());
         rightWheel.setMass(MassType.NORMAL);
         world.addBody(rightWheel);
         gameObjects.add(new GameObject("Everything/Tire.png", rightWheel, new Vector2(rightWheel.getTransform().getTranslationX() + 2.5, rightWheel.getTransform().getTranslationY() - 0.1), 0.85));
 
         rightSpring = new WheelJoint(rightWheel, car, rightSpringPoint.getTransform().getTranslation(), new Vector2(0, 1));
-        rightSpring.setDampingRatio(0.3);
+        rightSpring.setDampingRatio(0.6);
 
         leftSpring.setFrequency(8);
         rightSpring.setFrequency(8);
@@ -192,14 +206,8 @@ public class Eindopdracht extends Application {
         world.addJoint(rightSpring);
 
 
-        driverHead = new Body();
-        driverHead.addFixture(Geometry.createRectangle(0.4, 0.4));
-        driverHead.setMass(MassType.NORMAL);
-        driverHead.getTransform().setTranslation(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() + 0.6);
-        world.addBody(driverHead);
-        gameObjects.add(new GameObject("Everything/driver-head.png", driverHead, new Vector2(driverHead.getTransform().getTranslationX(), driverHead.getTransform().getTranslationY()), 1));
 
-        RevoluteJoint headToCar = new RevoluteJoint(driverHead, car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() + 0.5));
+        RevoluteJoint headToCar = new RevoluteJoint(driverHead, car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() + 0.2));
         headToCar.setCollisionAllowed(true);
         world.addJoint(headToCar);
 
@@ -278,21 +286,21 @@ public class Eindopdracht extends Application {
     }
 
     private void rotateRight() {
-        car.applyImpulse(-0.02);
+        car.applyImpulse(-0.04);
     }
 
     private void rotateLeft() {
-        car.applyImpulse(0.02);
+        car.applyImpulse(0.04);
     }
 
     private void driveBackwards() {
-        leftWheel.applyImpulse(0.05);
-        rightWheel.applyImpulse(0.05);
+        leftWheel.applyImpulse(0.008);
+        rightWheel.applyImpulse(0.008);
     }
 
     private void driveForwards() {
-        leftWheel.applyImpulse(-0.05);
-        rightWheel.applyImpulse(-0.05);
+        leftWheel.applyImpulse(-0.008);
+        rightWheel.applyImpulse(-0.008);
     }
 
     public void generateGround(int amount) {
