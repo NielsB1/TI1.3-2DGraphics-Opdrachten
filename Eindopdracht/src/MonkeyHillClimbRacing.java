@@ -92,6 +92,7 @@ public class MonkeyHillClimbRacing extends Application {
         }.start();
         mousePicker = new MousePicker(canvas);
 
+        stage.setFullScreen(true);
         stage.setScene(new Scene(mainPane, 1920, 1080));
         stage.setTitle("Joe");
         stage.show();

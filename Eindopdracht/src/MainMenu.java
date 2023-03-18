@@ -39,6 +39,8 @@ public class MainMenu {
             Point2D point = new Point2D.Double(event.getX(), event.getY());
             if (startButton.contains(point)){
                 monkeyHillClimbRacing.setGameStarted(true);
+            } else if (quitButton.contains(point)){
+                System.exit(1);
             }
         });
     }
