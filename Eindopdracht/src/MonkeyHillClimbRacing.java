@@ -24,7 +24,7 @@ import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
 
-public class Eindopdracht extends Application {
+public class MonkeyHillClimbRacing extends Application {
 
     private ResizableCanvas canvas;
     private World world;
@@ -37,21 +37,31 @@ public class Eindopdracht extends Application {
     private ArrayList<Line2D> lines = new ArrayList<>();
     private boolean firstDraw = true;
     private double scale = 100;
+    private MainMenu mainMenu;
+    private boolean isGameStarted = false;
+
 
     @Override
     public void start(Stage stage) throws Exception {
         BorderPane mainPane = new BorderPane();
 
         // Add debug button
-        javafx.scene.control.CheckBox showDebug = new CheckBox("Show debug");
-        showDebug.setFocusTraversable(false);
+            javafx.scene.control.CheckBox showDebug = new CheckBox("Show debug");
+            showDebug.setFocusTraversable(false);
 
-        showDebug.setOnAction(e -> {
-            debugSelected = showDebug.isSelected();
-        });
-        mainPane.setTop(showDebug);
+            showDebug.setOnAction(e -> {
+                debugSelected = showDebug.isSelected();
+            });
+            mainPane.setTop(showDebug);
 
-        canvas = new ResizableCanvas(g -> draw(g), mainPane);
+        canvas = new ResizableCanvas(g -> {
+            if (isGameStarted) {
+                draw(g);
+            } else {
+                mainMenu.draw(g);
+            }
+        }, mainPane);
+
         mainPane.setCenter(canvas);
         FXGraphics2D g2d = new FXGraphics2D(canvas.getGraphicsContext2D());
 
@@ -61,6 +71,7 @@ public class Eindopdracht extends Application {
         canvas.setOnKeyPressed(event -> onKeyPressed(event));
         canvas.setOnKeyReleased(event -> onKeyReleased(event));
 
+        mainMenu = new MainMenu(canvas, this);
         new AnimationTimer() {
             long last = -1;
 
@@ -71,7 +82,12 @@ public class Eindopdracht extends Application {
                 }
                 update((now - last) / 1000000000.0);
                 last = now;
-                draw(g2d);
+
+                if (isGameStarted) {
+                    draw(g2d);
+                } else {
+                    mainMenu.draw(g2d);
+                }
             }
         }.start();
         mousePicker = new MousePicker(canvas);
@@ -79,7 +95,6 @@ public class Eindopdracht extends Application {
         stage.setScene(new Scene(mainPane, 1920, 1080));
         stage.setTitle("Joe");
         stage.show();
-        draw(g2d);
     }
 
     private KeyCode currentKey = null;
@@ -149,9 +164,7 @@ public class Eindopdracht extends Application {
         world.addBody(driverHead);
 
 
-
         gameObjects.add(new GameObject("Everything/monkeyHead.png", driverHead, new Vector2(driverHead.getTransform().getTranslationX() - 20, driverHead.getTransform().getTranslationY() + 75), 0.2));
-
 
 
         gameObjects.add(new GameObject("Everything/Car.png", car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() - 10), 1));
@@ -206,7 +219,6 @@ public class Eindopdracht extends Application {
         world.addJoint(rightSpring);
 
 
-
         RevoluteJoint headToCar = new RevoluteJoint(driverHead, car, new Vector2(car.getTransform().getTranslationX(), car.getTransform().getTranslationY() + 0.2));
         headToCar.setCollisionAllowed(true);
         world.addJoint(headToCar);
@@ -253,35 +265,42 @@ public class Eindopdracht extends Application {
     }
 
     public void update(double deltaTime) {
-        world.update(deltaTime);
+        if (isGameStarted) {
+            world.update(deltaTime);
 
-        int x = (int) (driverHead.getTransform().getTranslationX() * scale);
-        if (driverHead.getTransform().getTranslationX() > 0)
+            int x = (int) (driverHead.getTransform().getTranslationX() * scale);
+            if (driverHead.getTransform().getTranslationX() > 0)
 
 
-            if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 50) {
-                //todo monkey do be dead, return to start screen
-            }
+                if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 50) {
+                    //todo monkey do be dead, return to start screen
+                    this.isGameStarted = false;
+                    gameObjects.clear();
+                    lines.clear();
+                    groundBodies.clear();
+                    init();
+                }
 
 //        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), scale);
 
-        if (currentKey != null) {
-            if (currentKey.equals(KeyCode.W)) {
-                driveForwards();
-            } else if (currentKey.equals(KeyCode.S)) {
-                driveBackwards();
-            } else if (currentKey.equals(KeyCode.A)) {
-                rotateLeft();
-            } else if (currentKey.equals(KeyCode.D)) {
-                rotateRight();
+            if (currentKey != null) {
+                if (currentKey.equals(KeyCode.W)) {
+                    driveForwards();
+                } else if (currentKey.equals(KeyCode.S)) {
+                    driveBackwards();
+                } else if (currentKey.equals(KeyCode.A)) {
+                    rotateLeft();
+                } else if (currentKey.equals(KeyCode.D)) {
+                    rotateRight();
+                }
             }
-        }
 
-        if (groundBodies.get((groundBodies.size() / 3) * 2).getTransform().getTranslationX() < car.getTransform().getTranslationX()) {
-            generateGround(100);
-        } else if (groundBodies.get(groundBodies.size() / 3).getTransform().getTranslationX() > car.getTransform().getTranslationX()
-                && car.getTransform().getTranslationX() > 100) {
-            generatePreviousGround();
+            if (groundBodies.get((groundBodies.size() / 3) * 2).getTransform().getTranslationX() < car.getTransform().getTranslationX()) {
+                generateGround(100);
+            } else if (groundBodies.get(groundBodies.size() / 3).getTransform().getTranslationX() > car.getTransform().getTranslationX()
+                    && car.getTransform().getTranslationX() > 100) {
+                generatePreviousGround();
+            }
         }
     }
 
@@ -383,7 +402,10 @@ public class Eindopdracht extends Application {
     }
 
     public static void main(String[] args) {
-        launch(Eindopdracht.class);
+        launch(MonkeyHillClimbRacing.class);
     }
 
+    public void setGameStarted(boolean gameStarted) {
+        isGameStarted = gameStarted;
+    }
 }
