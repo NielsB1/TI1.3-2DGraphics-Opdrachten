@@ -46,13 +46,13 @@ public class MonkeyHillClimbRacing extends Application {
         BorderPane mainPane = new BorderPane();
 
         // Add debug button
-            javafx.scene.control.CheckBox showDebug = new CheckBox("Show debug");
-            showDebug.setFocusTraversable(false);
+        javafx.scene.control.CheckBox showDebug = new CheckBox("Show debug");
+        showDebug.setFocusTraversable(false);
 
-            showDebug.setOnAction(e -> {
-                debugSelected = showDebug.isSelected();
-            });
-            mainPane.setTop(showDebug);
+        showDebug.setOnAction(e -> {
+            debugSelected = showDebug.isSelected();
+        });
+        mainPane.setTop(showDebug);
 
         canvas = new ResizableCanvas(g -> {
             if (isGameStarted) {
@@ -118,6 +118,7 @@ public class MonkeyHillClimbRacing extends Application {
     private Body driverHead;
 
     private ArrayList<Body> groundBodies = new ArrayList<>();
+    private ArrayList<Shape> groundShapes = new ArrayList<>();
 
     private int resolution = 100;
     private int amplitude = 500;
@@ -126,17 +127,27 @@ public class MonkeyHillClimbRacing extends Application {
     public void init() {
         world = new World();
         world.setGravity(new Vector2(0, -9.81));
-
         noiseMapGenerator = new NoiseMapGenerator(420);
 
+//startArea
+        lines.add(new Line2D.Double(-4000, 0, 0, 0));
+        groundShapes.add(new Rectangle2D.Double(-4000, -1000, 4000, 1000));
 
-        for (int i = 0; i < (1000 * resolution); i += resolution) {
+        for (int i = 0; i < (80 * resolution); i += resolution) {
             Body line = new Body();
 
             Point2D.Double topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude);
             Point2D.Double bottomRight = new Point2D.Double(i + resolution, noiseMapGenerator.noise((i + resolution) / distance) * amplitude);
 
             lines.add(new Line2D.Double(topLeft, bottomRight));
+
+            Polygon polygon = new Polygon();
+            polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
+            polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
+            polygon.addPoint((int) bottomRight.x, -1000);
+            polygon.addPoint((int) topLeft.x, -1000);
+
+            groundShapes.add(polygon);
 
             double y = bottomRight.y + ((topLeft.y - bottomRight.y) / 2);
             double x = topLeft.x + (resolution / 2f);
@@ -149,6 +160,7 @@ public class MonkeyHillClimbRacing extends Application {
             groundBodies.add(line);
             world.addBody(line);
         }
+
 
         car = new Body();
         car.addFixture(Geometry.createRectangle(2.4, .30));
@@ -231,11 +243,23 @@ public class MonkeyHillClimbRacing extends Application {
         floor.getTransform().setTranslation(-10.00, 0);
         floor.setMass(MassType.INFINITE);
         world.addBody(floor);
+
+        Body border = new Body();
+        border.addFixture(Geometry.createRectangle(1, 100));
+        border.getFixture(0).setFriction(1);
+        border.getTransform().setTranslation(-20.00, 0);
+        border.setMass(MassType.INFINITE);
+        world.addBody(border);
+
+        scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 600);
     }
+
+    private int distanceScore = 0;
+    private Point2D scorePoint ;
 
     public void draw(FXGraphics2D graphics) {
         graphics.setTransform(new AffineTransform());
-        graphics.setBackground(Color.white);
+        graphics.setBackground(Color.getHSBColor(360 / 80f, 0.3f, 0.8f));
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
 
         AffineTransform originalTransform = graphics.getTransform();
@@ -247,7 +271,7 @@ public class MonkeyHillClimbRacing extends Application {
         graphics.scale(1, -1);
 
         graphics.setColor(Color.green);
-        graphics.setStroke(new BasicStroke(3));
+        graphics.setStroke(new BasicStroke(10));
         for (Line2D line : lines) {
             graphics.draw(line);
         }
@@ -261,6 +285,19 @@ public class MonkeyHillClimbRacing extends Application {
             DebugDraw.draw(graphics, world, scale);
         }
 
+        graphics.setColor(Color.getHSBColor(1 / 25f, 0.7f, 0.5f));
+        graphics.setStroke(new BasicStroke(1));
+        for (Shape groundShape : groundShapes) {
+            graphics.fill(groundShape);
+            graphics.draw(groundShape);
+        }
+
+        graphics.setColor(Color.white);
+        graphics.setFont(new Font("Arial", Font.BOLD, 64));
+        System.out.println(camera.getCenterPoint());
+        graphics.scale(1, -1);
+        graphics.drawString(distanceScore + " m", (int) scorePoint.getX(), (int) scorePoint.getY());
+
         graphics.setTransform(originalTransform);
 
     }
@@ -269,12 +306,29 @@ public class MonkeyHillClimbRacing extends Application {
         if (isGameStarted) {
             world.update(deltaTime);
 
+            //todo does work, but kinda laggy
+//            double deltaX = car.getChangeInPosition().x /2;
+//            double deltaY = car.getChangeInPosition().y /2;
+//
+//            if (deltaX < 0)
+//                deltaX = -deltaY;
+//            if (deltaY < 0)
+//                deltaY = -deltaY;
+//            System.out.println(deltaX + " -- " + deltaY);
+//
+//            camera.setZoom(1 - (deltaX + deltaY));
+
+            camera.setZoom(0.8);
+
+            if ((int) car.getTransform().getTranslationX() > distanceScore) {
+                this.distanceScore = (int) car.getTransform().getTranslationX();
+            }
+
             int x = (int) (driverHead.getTransform().getTranslationX() * scale);
             if (driverHead.getTransform().getTranslationX() > 0)
 
 
                 if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 50) {
-                    //todo monkey do be dead, return to start screen
                     this.isGameStarted = false;
                     gameObjects.clear();
                     lines.clear();
@@ -297,7 +351,7 @@ public class MonkeyHillClimbRacing extends Application {
             }
 
             if (groundBodies.get((groundBodies.size() / 3) * 2).getTransform().getTranslationX() < car.getTransform().getTranslationX()) {
-                generateGround(100);
+                generateGround(40);
             } else if (groundBodies.get(groundBodies.size() / 3).getTransform().getTranslationX() > car.getTransform().getTranslationX()
                     && car.getTransform().getTranslationX() > 100) {
                 generatePreviousGround();
@@ -314,26 +368,29 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     private void driveBackwards() {
-        leftWheel.applyImpulse(0.008);
-        rightWheel.applyImpulse(0.008);
+        leftWheel.applyImpulse(0.015);
+        rightWheel.applyImpulse(0.015);
     }
 
     private void driveForwards() {
-        leftWheel.applyImpulse(-0.008);
-        rightWheel.applyImpulse(-0.008);
+        leftWheel.applyImpulse(-0.015);
+        rightWheel.applyImpulse(-0.015);
     }
 
     public void generateGround(int amount) {
         int i = 0;
         Iterator<Body> iterator = groundBodies.iterator();
         Iterator<Line2D> iter = lines.iterator();
+        Iterator<Shape> shapeIterator = groundShapes.iterator();
         while (iterator.hasNext()) {
             Body groundBody = iterator.next();
             Line2D line = iter.next();
+            Shape shape = shapeIterator.next();
             if (i < amount) {
                 world.removeBody(groundBody);
                 iterator.remove();
                 iter.remove();
+                shapeIterator.remove();
             }
             i++;
         }
@@ -351,6 +408,14 @@ public class MonkeyHillClimbRacing extends Application {
 
             lines.add(new Line2D.Double(topLeft, bottomRight));
 
+            Polygon polygon = new Polygon();
+            polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
+            polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
+            polygon.addPoint((int) bottomRight.x, -1000);
+            polygon.addPoint((int) topLeft.x, -1000);
+
+            groundShapes.add(polygon);
+
             double y = bottomRight.y + ((topLeft.y - bottomRight.y) / 2);
             double x = topLeft.x + (resolution / 2f);
             line.rotate(Math.atan((bottomRight.y - topLeft.y) / (bottomRight.x - topLeft.x)));
@@ -362,6 +427,7 @@ public class MonkeyHillClimbRacing extends Application {
             groundBodies.add(line);
             world.addBody(line);
         }
+        scorePoint = new Point2D.Double((car.getTransform().getTranslationX() * scale) + 1500, (car.getTransform().getTranslationY() * scale) - 600);
     }
 
     public void generatePreviousGround() {

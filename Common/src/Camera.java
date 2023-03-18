@@ -62,4 +62,12 @@ public class Camera {
     public void setCenter(double x, double y) {
         centerPoint = new Point2D.Double(-x, y);
     }
+
+    public void setZoom(double zoom){
+        this.zoom = zoom;
+    }
+
+    public Point2D getCenterPoint() {
+        return centerPoint;
+    }
 }
