@@ -308,41 +308,7 @@ public class MonkeyHillClimbRacing extends Application {
         graphics.drawString(distanceScore + " m - " + fuelPercentage + "% fuel", (int) scorePoint.getX(), (int) scorePoint.getY());
 
         if (isGameOver) {
-            graphics.setColor(Color.darkGray);
-            graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.85f));
-            Shape background = new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 400, (int) (-(camera.getCenterPoint().getY())) - 300, 800, 600);
-            graphics.fill(background);
-
-            graphics.setColor(Color.black);
-            graphics.setStroke(new BasicStroke(5));
-            graphics.draw(background);
-
-            graphics.setColor(Color.white);
-            graphics.setFont(new Font("Arial", Font.BOLD, 64));
-            graphics.drawString(gameOverCause, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 200);
-
-            graphics.drawString("Score: " + distanceScore, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 100);
-            graphics.drawString("Coins earned: " + coinsEarned, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())));
-
-            Area okButton = new Area(new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 150, (int) (-(camera.getCenterPoint().getY())) + 100, 300, 100));
-            graphics.draw(okButton);
-            graphics.drawString("OK", (int) (-(camera.getCenterPoint().getX())) - 50, (int) (-(camera.getCenterPoint().getY())) + 175);
-
-            canvas.setOnMouseClicked(event -> {
-                //todo checking mouse point not working, not in the right system of measurements
-//                Point2D point = new Point2D.Double(event.getX(), event.getY());
-//                System.out.println(point);
-//                System.out.println(okButton.getBounds2D().getCenterX() + " - " + okButton.getBounds2D().getCenterY());
-//                if (okButton.contains(point)) {
-//                    this.isGameStarted = false;
-//                    mainMenu = new MainMenu(canvas, this);
-//                    gameObjects.clear();
-//                    lines.clear();
-//                    groundBodies.clear();
-//                    init();
-//                    canvas.setOnMouseClicked(null);
-//                }
-            });
+            gameOver(graphics);
         }
 
         graphics.setTransform(originalTransform);
@@ -375,12 +341,6 @@ public class MonkeyHillClimbRacing extends Application {
                 this.isGameOver = true;
                 this.coinsEarned = calculateCoinsEarned();
                 gameOverCause = "You ran out of Fuel!";
-//                this.isGameStarted = false;
-//                mainMenu = new MainMenu(canvas, this);
-//                gameObjects.clear();
-//                lines.clear();
-//                groundBodies.clear();
-//                init();
             }
 
             int x = (int) (driverHead.getTransform().getTranslationX() * scale);
@@ -389,12 +349,6 @@ public class MonkeyHillClimbRacing extends Application {
                     this.isGameOver = true;
                     this.coinsEarned = calculateCoinsEarned();
                     gameOverCause = "Monkey head is hurting!";
-//                    this.isGameStarted = false;
-//                    mainMenu = new MainMenu(canvas, this);
-//                    gameObjects.clear();
-//                    lines.clear();
-//                    groundBodies.clear();
-//                    init();
                 }
             }
 
@@ -417,6 +371,51 @@ public class MonkeyHillClimbRacing extends Application {
                 generatePreviousGround();
             }
         }
+    }
+
+    public void gameOver(FXGraphics2D graphics) {
+        graphics.setColor(Color.darkGray);
+        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.85f));
+        Shape background = new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 400, (int) (-(camera.getCenterPoint().getY())) - 300, 800, 600);
+        graphics.fill(background);
+
+        graphics.setColor(Color.black);
+        graphics.setStroke(new BasicStroke(5));
+        graphics.draw(background);
+
+        graphics.setColor(Color.white);
+        graphics.setFont(new Font("Arial", Font.BOLD, 64));
+        graphics.drawString(gameOverCause, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 200);
+
+        graphics.drawString("Score: " + distanceScore, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 100);
+        graphics.drawString("Coins earned: " + coinsEarned, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())));
+
+        Area okButton = new Area(new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 150, (int) (-(camera.getCenterPoint().getY())) + 100, 300, 100));
+        graphics.draw(okButton);
+        graphics.drawString("OK", (int) (-(camera.getCenterPoint().getX())) - 50, (int) (-(camera.getCenterPoint().getY())) + 175);
+
+        canvas.setOnMouseClicked(event -> {
+            //not the best solution to get the right mouse position
+            Point2D point = new Point2D.Double(event.getX() - (canvas.getWidth() / 2), (event.getY() - (canvas.getHeight() / 2)));
+            Area relativeOkButton = new Area(new Rectangle2D.Double(-120, 80, 240, 80));
+
+            if (relativeOkButton.contains(point)) {
+                canvas.setOnMouseClicked(null);
+                gameOverCause = "";
+                this.isGameOver = false;
+                this.isGameStarted = false;
+
+                this.currentFuel = maxFuel;
+                this.distanceScore = 0;
+
+                mainMenu = new MainMenu(canvas, this);
+                gameObjects.clear();
+                lines.clear();
+                groundBodies.clear();
+                groundShapes.clear();
+                init();
+            }
+        });
     }
 
     public int calculateCoinsEarned() {

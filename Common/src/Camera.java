@@ -56,7 +56,7 @@ public class Camera {
     }
 
     public void mouseScroll(ScrollEvent e) {
-        zoom *= (1 + e.getDeltaY() / 250.0f);
+//        zoom *= (1 + e.getDeltaY() / 250.0f);
     }
 
     public void setCenter(double x, double y) {
