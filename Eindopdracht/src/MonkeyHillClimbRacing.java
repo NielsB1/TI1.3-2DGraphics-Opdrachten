@@ -32,13 +32,15 @@ public class MonkeyHillClimbRacing extends Application {
     private boolean debugSelected = false;
     private ArrayList<GameObject> gameObjects = new ArrayList<>();
     private Body floor;
-    private MousePicker mousePicker;
     private NoiseMapGenerator noiseMapGenerator;
     private ArrayList<Line2D> lines = new ArrayList<>();
     private boolean firstDraw = true;
     private double scale = 100;
     private MainMenu mainMenu;
     private boolean isGameStarted = false;
+    private boolean isGameOver = false;
+    private double maxFuel;
+    private double currentFuel;
 
 
     @Override
@@ -90,7 +92,6 @@ public class MonkeyHillClimbRacing extends Application {
                 }
             }
         }.start();
-        mousePicker = new MousePicker(canvas);
 
         stage.setFullScreen(true);
         stage.setScene(new Scene(mainPane, 1920, 1080));
@@ -129,11 +130,11 @@ public class MonkeyHillClimbRacing extends Application {
         world.setGravity(new Vector2(0, -9.81));
         noiseMapGenerator = new NoiseMapGenerator(420);
 
-//startArea
+        //startArea
         lines.add(new Line2D.Double(-4000, 0, 0, 0));
         groundShapes.add(new Rectangle2D.Double(-4000, -1000, 4000, 1000));
 
-        for (int i = 0; i < (80 * resolution); i += resolution) {
+        for (int i = 0; i < (120 * resolution); i += resolution) {
             Body line = new Body();
 
             Point2D.Double topLeft = new Point2D.Double(i, noiseMapGenerator.noise(i / distance) * amplitude);
@@ -251,11 +252,16 @@ public class MonkeyHillClimbRacing extends Application {
         border.setMass(MassType.INFINITE);
         world.addBody(border);
 
-        scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 600);
+        scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 500);
+
+        maxFuel = 50.0;
+        currentFuel = maxFuel;
     }
 
     private int distanceScore = 0;
-    private Point2D scorePoint ;
+    private int coinsEarned = 0;
+    private Point2D scorePoint;
+    private String gameOverCause = "";
 
     public void draw(FXGraphics2D graphics) {
         graphics.setTransform(new AffineTransform());
@@ -270,12 +276,15 @@ public class MonkeyHillClimbRacing extends Application {
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
         graphics.scale(1, -1);
 
+        graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
         graphics.setColor(Color.green);
         graphics.setStroke(new BasicStroke(10));
         for (Line2D line : lines) {
             graphics.draw(line);
         }
 
+        graphics.setStroke(new BasicStroke(3));
         for (GameObject go : gameObjects) {
             go.draw(graphics);
         }
@@ -294,49 +303,100 @@ public class MonkeyHillClimbRacing extends Application {
 
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Arial", Font.BOLD, 64));
-        System.out.println(camera.getCenterPoint());
         graphics.scale(1, -1);
-        graphics.drawString(distanceScore + " m", (int) scorePoint.getX(), (int) scorePoint.getY());
+        int fuelPercentage = (int) ((currentFuel / maxFuel) * 100);
+        graphics.drawString(distanceScore + " m - " + fuelPercentage + "% fuel", (int) scorePoint.getX(), (int) scorePoint.getY());
+
+        if (isGameOver) {
+            graphics.setColor(Color.darkGray);
+            graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.85f));
+            Shape background = new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 400, (int) (-(camera.getCenterPoint().getY())) - 300, 800, 600);
+            graphics.fill(background);
+
+            graphics.setColor(Color.black);
+            graphics.setStroke(new BasicStroke(5));
+            graphics.draw(background);
+
+            graphics.setColor(Color.white);
+            graphics.setFont(new Font("Arial", Font.BOLD, 64));
+            graphics.drawString(gameOverCause, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 200);
+
+            graphics.drawString("Score: " + distanceScore, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())) - 100);
+            graphics.drawString("Coins earned: " + coinsEarned, (int) (-(camera.getCenterPoint().getX())) - 380, (int) (-(camera.getCenterPoint().getY())));
+
+            Area okButton = new Area(new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 150, (int) (-(camera.getCenterPoint().getY())) + 100, 300, 100));
+            graphics.draw(okButton);
+            graphics.drawString("OK", (int) (-(camera.getCenterPoint().getX())) - 50, (int) (-(camera.getCenterPoint().getY())) + 175);
+
+            canvas.setOnMouseClicked(event -> {
+                //todo checking mouse point not working, not in the right system of measurements
+//                Point2D point = new Point2D.Double(event.getX(), event.getY());
+//                System.out.println(point);
+//                System.out.println(okButton.getBounds2D().getCenterX() + " - " + okButton.getBounds2D().getCenterY());
+//                if (okButton.contains(point)) {
+//                    this.isGameStarted = false;
+//                    mainMenu = new MainMenu(canvas, this);
+//                    gameObjects.clear();
+//                    lines.clear();
+//                    groundBodies.clear();
+//                    init();
+//                    canvas.setOnMouseClicked(null);
+//                }
+            });
+        }
 
         graphics.setTransform(originalTransform);
 
     }
 
     public void update(double deltaTime) {
-        if (isGameStarted) {
+        if (isGameStarted && !isGameOver) {
             world.update(deltaTime);
 
+            currentFuel -= deltaTime;
+
             //todo does work, but kinda laggy
-//            double deltaX = car.getChangeInPosition().x /2;
-//            double deltaY = car.getChangeInPosition().y /2;
+            double deltaX = car.getChangeInPosition().x / 2;
+            double deltaY = car.getChangeInPosition().y / 2;
 //
 //            if (deltaX < 0)
 //                deltaX = -deltaY;
 //            if (deltaY < 0)
 //                deltaY = -deltaY;
-//            System.out.println(deltaX + " -- " + deltaY);
 //
 //            camera.setZoom(1 - (deltaX + deltaY));
-
             camera.setZoom(0.8);
 
             if ((int) car.getTransform().getTranslationX() > distanceScore) {
                 this.distanceScore = (int) car.getTransform().getTranslationX();
             }
 
+            if (currentFuel <= 0) {
+                this.isGameOver = true;
+                this.coinsEarned = calculateCoinsEarned();
+                gameOverCause = "You ran out of Fuel!";
+//                this.isGameStarted = false;
+//                mainMenu = new MainMenu(canvas, this);
+//                gameObjects.clear();
+//                lines.clear();
+//                groundBodies.clear();
+//                init();
+            }
+
             int x = (int) (driverHead.getTransform().getTranslationX() * scale);
-            if (driverHead.getTransform().getTranslationX() > 0)
-
-
-                if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 50) {
-                    this.isGameStarted = false;
-                    gameObjects.clear();
-                    lines.clear();
-                    groundBodies.clear();
-                    init();
+            if (driverHead.getTransform().getTranslationX() > 0) {
+                if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 20) {
+                    this.isGameOver = true;
+                    this.coinsEarned = calculateCoinsEarned();
+                    gameOverCause = "Monkey head is hurting!";
+//                    this.isGameStarted = false;
+//                    mainMenu = new MainMenu(canvas, this);
+//                    gameObjects.clear();
+//                    lines.clear();
+//                    groundBodies.clear();
+//                    init();
                 }
-
-//        mousePicker.update(world, camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()), scale);
+            }
 
             if (currentKey != null) {
                 if (currentKey.equals(KeyCode.W)) {
@@ -357,6 +417,10 @@ public class MonkeyHillClimbRacing extends Application {
                 generatePreviousGround();
             }
         }
+    }
+
+    public int calculateCoinsEarned() {
+        return (int) (5 + (0.2 * distanceScore));
     }
 
     private void rotateRight() {
@@ -396,7 +460,6 @@ public class MonkeyHillClimbRacing extends Application {
         }
 
 
-        System.out.println(groundBodies.get(groundBodies.size() - 1).getTransform().getTranslationX() * scale);
         int startIndex = (int) ((groundBodies.get(groundBodies.size() - 1).getTransform().getTranslationX() * scale) + resolution / 2);
 
         for (int j = startIndex; j < startIndex + (amount * resolution); j += resolution) {
@@ -427,7 +490,7 @@ public class MonkeyHillClimbRacing extends Application {
             groundBodies.add(line);
             world.addBody(line);
         }
-        scorePoint = new Point2D.Double((car.getTransform().getTranslationX() * scale) + 1500, (car.getTransform().getTranslationY() * scale) - 600);
+        scorePoint = new Point2D.Double((car.getTransform().getTranslationX() * scale) + 1500, (car.getTransform().getTranslationY() * scale) - 500);
     }
 
     public void generatePreviousGround() {
@@ -443,7 +506,6 @@ public class MonkeyHillClimbRacing extends Application {
 //            }
 //            i++;
 //        }
-//        System.out.println(groundBodies.get(0).getTransform().getTranslationX() * scale);
 //        int startIndex = (int) ((groundBodies.get(0).getTransform().getTranslationX() * scale) + resolution / 2);
 //        for (int j = startIndex; j < startIndex + (100 * resolution); j += resolution) {
 //
