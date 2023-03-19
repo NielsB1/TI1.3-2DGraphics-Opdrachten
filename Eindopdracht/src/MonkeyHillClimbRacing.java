@@ -160,6 +160,10 @@ public class MonkeyHillClimbRacing extends Application {
 
             groundBodies.add(line);
             world.addBody(line);
+
+            PlayerStats pl = new PlayerStats();
+            PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
+            playerStatsLoaderAndSaver.save(pl);
         }
 
 
