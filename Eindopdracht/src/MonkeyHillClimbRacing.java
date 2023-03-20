@@ -1,6 +1,8 @@
 
 import java.awt.*;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -23,6 +25,8 @@ import org.dyn4j.geometry.MassType;
 import org.dyn4j.geometry.Vector2;
 import org.jfree.fx.FXGraphics2D;
 import org.jfree.fx.ResizableCanvas;
+
+import javax.imageio.ImageIO;
 
 public class MonkeyHillClimbRacing extends Application {
 
@@ -266,6 +270,12 @@ public class MonkeyHillClimbRacing extends Application {
         border.setMass(MassType.INFINITE);
         world.addBody(border);
 
+        try {
+            controls = ImageIO.read(getClass().getResource("Controls.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 500);
 
         maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 10);
@@ -276,6 +286,8 @@ public class MonkeyHillClimbRacing extends Application {
     private int coinsEarned = 0;
     private Point2D scorePoint;
     private String gameOverCause = "";
+
+    private BufferedImage controls;
 
     public void draw(FXGraphics2D graphics) {
         graphics.setTransform(new AffineTransform());
@@ -288,9 +300,16 @@ public class MonkeyHillClimbRacing extends Application {
         camera.setCenter(carPosition.x * scale, carPosition.y * scale);
 
         graphics.setTransform(camera.getTransform((int) canvas.getWidth(), (int) canvas.getHeight()));
+
+        AffineTransform transform = new AffineTransform();
+        transform.setToTranslation(-1000, -700);
+
+        graphics.drawImage(controls, transform, null);
+
         graphics.scale(1, -1);
 
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+
 
         graphics.setColor(Color.green);
         graphics.setStroke(new BasicStroke(10));

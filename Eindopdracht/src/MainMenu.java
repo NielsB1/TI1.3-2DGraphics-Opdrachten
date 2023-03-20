@@ -26,7 +26,7 @@ public class MainMenu {
     public MainMenu(ResizableCanvas canvas, MonkeyHillClimbRacing monkeyHillClimbRacing) {
         this.monkeyHillClimbRacing = monkeyHillClimbRacing;
         this.shopMenu = new ShopMenu(canvas, monkeyHillClimbRacing, this);
-        this.mapSelectionMenu = new MapSelectionMenu(canvas, monkeyHillClimbRacing);
+        this.mapSelectionMenu = new MapSelectionMenu(canvas, monkeyHillClimbRacing, this);
 
         startButton = new Area(new Rectangle2D.Double(100, 560, 300, 50));
         mapSelectionButton = new Area(new Rectangle2D.Double(100, 660, 295, 50));
@@ -101,6 +101,7 @@ public class MainMenu {
                 shopSelected = true;
             } else if (mapSelectionButton.contains(point)) {
                 canvas.setOnMouseClicked(null);
+                mapSelectionMenu.resetMouseEventListeners();
                 mapSelectionSelected = true;
             }
         });
