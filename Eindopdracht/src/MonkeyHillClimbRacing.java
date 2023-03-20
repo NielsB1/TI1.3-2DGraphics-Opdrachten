@@ -131,6 +131,9 @@ public class MonkeyHillClimbRacing extends Application {
     private int resolution = 100;
     private int amplitude = 500;
     private double distance = 1000;
+//    private int resolution = 100;
+//    private int amplitude = 3000;
+//    private double distance = 3000;
 
     public void init() {
 //        PlayerStats playerStats = new PlayerStats();
@@ -163,8 +166,8 @@ public class MonkeyHillClimbRacing extends Application {
             Polygon polygon = new Polygon();
             polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
-            polygon.addPoint((int) bottomRight.x, -1000);
-            polygon.addPoint((int) topLeft.x, -1000);
+            polygon.addPoint((int) bottomRight.x, (int) (bottomRight.y - 2000));
+            polygon.addPoint((int) topLeft.x, (int) (topLeft.y -2000));
 
             groundShapes.add(polygon);
 
@@ -278,7 +281,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 500);
 
-        maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 10);
+        maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 20);
         currentFuel = maxFuel;
     }
 
@@ -514,8 +517,8 @@ public class MonkeyHillClimbRacing extends Application {
             Polygon polygon = new Polygon();
             polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
-            polygon.addPoint((int) bottomRight.x, -1000);
-            polygon.addPoint((int) topLeft.x, -1000);
+            polygon.addPoint((int) bottomRight.x, (int) (bottomRight.y - 2000));
+            polygon.addPoint((int) topLeft.x, (int) (topLeft.y -2000));
 
             groundShapes.add(polygon);
 

@@ -165,10 +165,10 @@ public class ShopMenu {
     }
 
     public void calculateCosts() {
-        this.engineCost = 50 + (25 * monkeyHillClimbRacing.getPlayerStats().getEngineUpgradeLvl());
-        this.tiresCost = 50 + (25 * monkeyHillClimbRacing.getPlayerStats().getTireUpgradeLvl());
-        this.aerialControlCost = 50 + (25 * monkeyHillClimbRacing.getPlayerStats().getAerialControlUpgradeLvl());
-        this.fuelCost = 50 + (25 * monkeyHillClimbRacing.getPlayerStats().getFuelUpgradeLvl());
+        this.engineCost = 25 + (25 * monkeyHillClimbRacing.getPlayerStats().getEngineUpgradeLvl());
+        this.tiresCost = 25 + (25 * monkeyHillClimbRacing.getPlayerStats().getTireUpgradeLvl());
+        this.aerialControlCost = 25 + (25 * monkeyHillClimbRacing.getPlayerStats().getAerialControlUpgradeLvl());
+        this.fuelCost = 25 + (25 * monkeyHillClimbRacing.getPlayerStats().getFuelUpgradeLvl());
     }
 }
 
