@@ -102,7 +102,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         stage.setFullScreen(true);
         stage.setScene(new Scene(mainPane, 1920, 1080));
-        stage.setTitle("Joe");
+        stage.setTitle("Monkey Hill Climb Racing");
         stage.show();
     }
 
@@ -146,7 +146,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         world = new World();
         world.setGravity(new Vector2(0, -9.81));
-        noiseMapGenerator = new NoiseMapGenerator(420);
+        noiseMapGenerator = new NoiseMapGenerator((long) (Math.random() * 9999));
 
         //startArea
         lines.add(new Line2D.Double(-4000, 0, 0, 0));

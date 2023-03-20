@@ -17,6 +17,10 @@ public class MapSelectionMenu {
     private MainMenu mainMenu;
 
     private Area backButton;
+    private Area map1;
+    private Area map2;
+    private Area map3;
+    private Area map4;
 
 
     public MapSelectionMenu(ResizableCanvas canvas, MonkeyHillClimbRacing monkeyHillClimbRacing, MainMenu mainMenu) {
@@ -35,6 +39,11 @@ public class MapSelectionMenu {
 
         backButton = new Area(new Rectangle2D.Double(100, 910, 105, 50));
 
+        map1 = new Area(new Rectangle2D.Double(150, 400, 375, 300));
+        map2 = new Area(new Rectangle2D.Double(575, 400, 375, 300));
+        map3 = new Area(new Rectangle2D.Double(1000, 400, 375, 300));
+        map4 = new Area(new Rectangle2D.Double(1425, 400, 375, 300));
+
     }
 
     public void draw(Graphics2D g2d) {
@@ -46,11 +55,18 @@ public class MapSelectionMenu {
         g2d.setColor(Color.white);
         g2d.setStroke(new BasicStroke(5));
         g2d.draw(backButton);
+        g2d.draw(map1);
+        g2d.draw(map2);
+        g2d.draw(map3);
+        g2d.draw(map4);
 
 
         g2d.setColor(Color.darkGray);
         g2d.fill(backButton);
-
+        g2d.fill(map1);
+        g2d.fill(map2);
+        g2d.fill(map3);
+        g2d.fill(map4);
 
 
         g2d.setColor(Color.white);
@@ -58,6 +74,10 @@ public class MapSelectionMenu {
         g2d.drawString("Select map", 800, 200);
 
         g2d.setFont(new Font("Arial", Font.PLAIN, 46));
+        g2d.drawString("Grasslands", 230, 380);
+        g2d.drawString("Highway", 690, 380);
+        g2d.drawString("Mountains", 1085, 380);
+        g2d.drawString("Moon", 1550, 380);
 
 
         g2d.drawString("Back", 100, 950);
@@ -70,6 +90,38 @@ public class MapSelectionMenu {
         canvas.setOnMouseClicked(event -> {
             Point2D point = new Point2D.Double(event.getX(), event.getY());
             if (backButton.contains(point)) {
+                canvas.setOnMouseClicked(null);
+                mainMenu.setMapSelectionSelected(false);
+                mainMenu.resetMouseEventListeners();
+            } else if (map1.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+                playerStats.setSelectedLevel(1);
+                monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                canvas.setOnMouseClicked(null);
+                mainMenu.setMapSelectionSelected(false);
+                mainMenu.resetMouseEventListeners();
+            } else if (map2.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+                playerStats.setSelectedLevel(2);
+                monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                canvas.setOnMouseClicked(null);
+                mainMenu.setMapSelectionSelected(false);
+                mainMenu.resetMouseEventListeners();
+            } else if (map3.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+                playerStats.setSelectedLevel(3);
+                monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                canvas.setOnMouseClicked(null);
+                mainMenu.setMapSelectionSelected(false);
+                mainMenu.resetMouseEventListeners();
+            } else if (map4.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+                playerStats.setSelectedLevel(4);
+                monkeyHillClimbRacing.setPlayerStats(playerStats);
+
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
                 mainMenu.resetMouseEventListeners();
