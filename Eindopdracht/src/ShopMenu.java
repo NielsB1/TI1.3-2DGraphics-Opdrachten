@@ -111,13 +111,13 @@ public class ShopMenu {
         g2d.drawString(engineCost + " coins", 480, 800);
 
         g2d.drawString("Tires lvl " + (monkeyHillClimbRacing.getPlayerStats().getTireUpgradeLvl() + 1), 720, 750);
-        g2d.drawString(engineCost + " coins", 720, 800);
+        g2d.drawString(tiresCost + " coins", 720, 800);
 
         g2d.drawString("Aerial control lvl " + (monkeyHillClimbRacing.getPlayerStats().getAerialControlUpgradeLvl() + 1), 920, 750);
-        g2d.drawString(engineCost + " coins", 920, 800);
+        g2d.drawString(aerialControlCost + " coins", 920, 800);
 
         g2d.drawString("Fuel lvl " + (monkeyHillClimbRacing.getPlayerStats().getFuelUpgradeLvl() + 1), 1240, 750);
-        g2d.drawString(engineCost + " coins", 1240, 800);
+        g2d.drawString(fuelCost + " coins", 1240, 800);
 
     }
 
@@ -128,6 +128,38 @@ public class ShopMenu {
                 canvas.setOnMouseClicked(null);
                 mainMenu.setShopSelected(false);
                 mainMenu.resetMouseEventListeners();
+            } else if (upgradeEngineButton.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+
+                if (playerStats.getCoins() >= engineCost) {
+                    playerStats.setEngineUpgradeLvl(playerStats.getEngineUpgradeLvl() + 1);
+                    playerStats.setCoins(playerStats.getCoins() - engineCost);
+                    monkeyHillClimbRacing.setPlayerStats(playerStats);
+                }
+            } else if (upgradeTiresButton.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+
+                if (playerStats.getCoins() >= tiresCost) {
+                    playerStats.setTireUpgradeLvl(playerStats.getTireUpgradeLvl() + 1);
+                    playerStats.setCoins(playerStats.getCoins() - tiresCost);
+                    monkeyHillClimbRacing.setPlayerStats(playerStats);
+                }
+            } else if (upgradeAerialControlButton.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+
+                if (playerStats.getCoins() >= aerialControlCost) {
+                    playerStats.setAerialControlUpgradeLvl(playerStats.getAerialControlUpgradeLvl() + 1);
+                    playerStats.setCoins(playerStats.getCoins() - aerialControlCost);
+                    monkeyHillClimbRacing.setPlayerStats(playerStats);
+                }
+            } else if (upgradeFuelButton.contains(point)) {
+                PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
+
+                if (playerStats.getCoins() >= fuelCost) {
+                    playerStats.setFuelUpgradeLvl(playerStats.getFuelUpgradeLvl() + 1);
+                    playerStats.setCoins(playerStats.getCoins() - fuelCost);
+                    monkeyHillClimbRacing.setPlayerStats(playerStats);
+                }
             }
         });
     }

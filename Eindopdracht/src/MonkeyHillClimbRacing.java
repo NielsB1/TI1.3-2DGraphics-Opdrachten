@@ -209,7 +209,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         leftWheel = new Body();
         leftWheel.addFixture(Geometry.createCircle(.25));
-        leftWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl()));
+        leftWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl() / 2f));
         leftWheel.getTransform().setTranslation(leftSpringPoint.getTransform().getTranslation());
         leftWheel.setMass(MassType.NORMAL);
         world.addBody(leftWheel);
@@ -231,7 +231,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         rightWheel = new Body();
         rightWheel.addFixture(Geometry.createCircle(.25));
-        rightWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl()));
+        rightWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl() / 2f));
         rightWheel.getTransform().setTranslation(rightSpringPoint.getTransform().getTranslation());
         rightWheel.setMass(MassType.NORMAL);
         world.addBody(rightWheel);
@@ -410,6 +410,7 @@ public class MonkeyHillClimbRacing extends Application {
 
 
         canvas.setOnMouseClicked(event -> {
+            canvas.setOnMouseClicked(null);
             //not the best solution to get the right mouse position
             Point2D point = new Point2D.Double(event.getX() - (canvas.getWidth() / 2), (event.getY() - (canvas.getHeight() / 2)));
             Area relativeOkButton = new Area(new Rectangle2D.Double(-120, 80, 240, 80));
@@ -422,7 +423,6 @@ public class MonkeyHillClimbRacing extends Application {
                     playerStats.setHighScore(distanceScore);
                 }
 
-                canvas.setOnMouseClicked(null);
                 gameOverCause = "";
                 this.isGameOver = false;
                 this.isGameStarted = false;
@@ -441,11 +441,11 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     public int calculateCoinsEarned() {
-        return (int) (5 + (0.2 * distanceScore)) * playerStats.getSelectedLevel();
+        return (int) (5 + (0.45 * distanceScore)) * playerStats.getSelectedLevel();
     }
 
     private void rotateRight() {
-        car.applyImpulse(-0.03 + (playerStats.getAerialControlUpgradeLvl() * 0.005));
+        car.applyImpulse(-0.03 - (playerStats.getAerialControlUpgradeLvl() * 0.005));
     }
 
     private void rotateLeft() {
@@ -458,8 +458,8 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     private void driveForwards() {
-        leftWheel.applyImpulse(-0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
-        rightWheel.applyImpulse(-0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
+        leftWheel.applyImpulse(-0.008 - (playerStats.getEngineUpgradeLvl() * 0.002));
+        rightWheel.applyImpulse(-0.008 - (playerStats.getEngineUpgradeLvl() * 0.002));
     }
 
     public void generateGround(int amount) {

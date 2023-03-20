@@ -40,6 +40,7 @@ public class MainMenu {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        resetMouseEventListeners();
     }
 
     public void draw(Graphics2D g2d) {
