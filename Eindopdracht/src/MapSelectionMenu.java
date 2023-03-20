@@ -76,13 +76,15 @@ public class MapSelectionMenu {
         g2d.setFont(new Font("Arial", Font.PLAIN, 46));
         g2d.drawString("Grasslands", 230, 380);
         g2d.drawString("Highway", 690, 380);
-        g2d.drawString("Mountains", 1085, 380);
-        g2d.drawString("Moon", 1550, 380);
+        g2d.drawString("Moon", 1120, 380);
+        g2d.drawString("Mountains", 1500, 380);
 
 
         g2d.drawString("Back", 100, 950);
 
         g2d.setFont(new Font("Arial", Font.PLAIN, 32));
+        g2d.drawString("High score: " + monkeyHillClimbRacing.getPlayerStats().getHighScore() + " m", 1550, 100);
+        g2d.drawString("Coins: " + monkeyHillClimbRacing.getPlayerStats().getCoins(), 1550, 150);
 
     }
 
@@ -97,6 +99,7 @@ public class MapSelectionMenu {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
                 playerStats.setSelectedLevel(1);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
+                monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
@@ -105,6 +108,7 @@ public class MapSelectionMenu {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
                 playerStats.setSelectedLevel(2);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
+                monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
@@ -113,6 +117,7 @@ public class MapSelectionMenu {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
                 playerStats.setSelectedLevel(3);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
+                monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
@@ -121,6 +126,7 @@ public class MapSelectionMenu {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
                 playerStats.setSelectedLevel(4);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
+                monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);

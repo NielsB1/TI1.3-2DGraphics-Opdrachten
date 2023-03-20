@@ -129,31 +129,21 @@ public class MonkeyHillClimbRacing extends Application {
     private ArrayList<Shape> groundShapes = new ArrayList<>();
 
     private int resolution = 100;
-    private int amplitude = 500;
-    private double distance = 1000;
-//    private int resolution = 100;
-//    private int amplitude = 3000;
-//    private double distance = 3000;
+    private int amplitude = 400;
+    private double distance = 1200;
+    private double gravity = -9.81;
+    private Color surface = Color.green;
+    private Color ground = Color.getHSBColor(1 / 25f, 0.7f, 0.5f);
+    private Color sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
 
     public void init() {
-//        PlayerStats playerStats = new PlayerStats();
-//        playerStats.setCoins(0);
-//        playerStats.setTireUpgradeLvl(1);
-//        playerStats.setEngineUpgradeLvl(1);
-//        playerStats.setHighScore(0);
-//        playerStats.setSelectedLevel(1);
-//        playerStats.setFuelUpgradeLvl(1);
-//        playerStats.setAerialControlUpgradeLvl(1);
-//        playerStatsLoaderAndSaver.save(playerStats);
-
-
         world = new World();
-        world.setGravity(new Vector2(0, -9.81));
+        world.setGravity(new Vector2(0, gravity));
         noiseMapGenerator = new NoiseMapGenerator((long) (Math.random() * Long.MAX_VALUE));
 
         //startArea
         lines.add(new Line2D.Double(-4000, 0, 0, 0));
-        groundShapes.add(new Rectangle2D.Double(-4000, -1000, 4000, 1000));
+        groundShapes.add(new Rectangle2D.Double(-4000, -1500, 4000, 1500));
 
         for (int i = 0; i < (120 * resolution); i += resolution) {
             Body line = new Body();
@@ -284,6 +274,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 20);
         currentFuel = maxFuel;
+        playerStats.setCoins(100000);
     }
 
     private int distanceScore = 0;
@@ -295,7 +286,7 @@ public class MonkeyHillClimbRacing extends Application {
 
     public void draw(FXGraphics2D graphics) {
         graphics.setTransform(new AffineTransform());
-        graphics.setBackground(Color.getHSBColor(360 / 80f, 0.3f, 0.8f));
+        graphics.setBackground(sky);
         graphics.clearRect(0, 0, (int) canvas.getWidth(), (int) canvas.getHeight());
 
         AffineTransform originalTransform = graphics.getTransform();
@@ -315,7 +306,7 @@ public class MonkeyHillClimbRacing extends Application {
         graphics.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
 
-        graphics.setColor(Color.green);
+        graphics.setColor(surface);
         graphics.setStroke(new BasicStroke(10));
         for (Line2D line : lines) {
             graphics.draw(line);
@@ -331,7 +322,7 @@ public class MonkeyHillClimbRacing extends Application {
             DebugDraw.draw(graphics, world, scale);
         }
 
-        graphics.setColor(Color.getHSBColor(1 / 25f, 0.7f, 0.5f));
+        graphics.setColor(ground);
         graphics.setStroke(new BasicStroke(1));
         for (Shape groundShape : groundShapes) {
             graphics.fill(groundShape);
@@ -461,6 +452,62 @@ public class MonkeyHillClimbRacing extends Application {
                 init();
             }
         });
+    }
+
+    public void changeMap(int map) {
+        switch (map) {
+            case 1:
+                gravity = -9.81;
+
+                resolution = 150;
+                amplitude = 600;
+                distance = 1200;
+
+                surface = Color.green;
+                ground = Color.getHSBColor(1 / 25f, 0.7f, 0.5f);
+                ;
+                sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
+                break;
+            case 2:
+                gravity = -9.81;
+
+                resolution = 200;
+                amplitude = 2500;
+                distance = 3000;
+
+                surface = Color.darkGray;
+                ground = Color.gray;
+                sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
+                break;
+            case 3:
+                gravity = -1.62;
+
+                resolution = 150;
+                amplitude = 1200;
+                distance = 1500;
+
+                //todo make the map look like the moon
+                surface = Color.darkGray;
+                ground = Color.gray;
+                sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
+                break;
+            case 4:
+                gravity = -9.81;
+
+                resolution = 100;
+                amplitude = 2500;
+                distance = 1600;
+
+                surface = Color.green;
+                ground = Color.getHSBColor(1 / 25f, 0.7f, 0.5f);
+                sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
+                break;
+        }
+        gameObjects.clear();
+        lines.clear();
+        groundBodies.clear();
+        groundShapes.clear();
+        init();
     }
 
     public int calculateCoinsEarned() {
