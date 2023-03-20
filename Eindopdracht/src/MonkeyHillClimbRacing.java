@@ -149,7 +149,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         world = new World();
         world.setGravity(new Vector2(0, -9.81));
-        noiseMapGenerator = new NoiseMapGenerator((long) (Math.random() * 9999));
+        noiseMapGenerator = new NoiseMapGenerator((long) (Math.random() * Long.MAX_VALUE));
 
         //startArea
         lines.add(new Line2D.Double(-4000, 0, 0, 0));
@@ -167,7 +167,7 @@ public class MonkeyHillClimbRacing extends Application {
             polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) (bottomRight.y - 2000));
-            polygon.addPoint((int) topLeft.x, (int) (topLeft.y -2000));
+            polygon.addPoint((int) topLeft.x, (int) (topLeft.y - 2000));
 
             groundShapes.add(polygon);
 
@@ -177,6 +177,7 @@ public class MonkeyHillClimbRacing extends Application {
 
             line.addFixture(Geometry.createRectangle((topLeft.distance(bottomRight) / scale) - 0.029, 0.01));
             line.getTransform().setTranslation(x / scale, y / scale);
+            line.getFixture(0).setFriction(10);
             line.setMass(MassType.INFINITE);
 
             groundBodies.add(line);
@@ -463,7 +464,7 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     public int calculateCoinsEarned() {
-        return (int) (5 + (0.45 * distanceScore)) * playerStats.getSelectedLevel();
+        return (int) ((5 + (0.45 * distanceScore)) * Math.pow(2, playerStats.getSelectedLevel()));
     }
 
     private void rotateRight() {
@@ -518,7 +519,7 @@ public class MonkeyHillClimbRacing extends Application {
             polygon.addPoint((int) topLeft.x, (int) topLeft.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) bottomRight.y - 2);
             polygon.addPoint((int) bottomRight.x, (int) (bottomRight.y - 2000));
-            polygon.addPoint((int) topLeft.x, (int) (topLeft.y -2000));
+            polygon.addPoint((int) topLeft.x, (int) (topLeft.y - 2000));
 
             groundShapes.add(polygon);
 
@@ -528,6 +529,7 @@ public class MonkeyHillClimbRacing extends Application {
 
             line.addFixture(Geometry.createRectangle((topLeft.distance(bottomRight) / scale) - 0.029, 0.01));
             line.getTransform().setTranslation(x / scale, y / scale);
+            line.getFixture(0).setFriction(2);
             line.setMass(MassType.INFINITE);
 
             groundBodies.add(line);
