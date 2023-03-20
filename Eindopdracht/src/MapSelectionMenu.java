@@ -9,9 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class MainMenu {
-    private ShopMenu shopMenu;
-    private MapSelectionMenu mapSelectionMenu;
+public class MapSelectionMenu {
     private Area startButton;
     private Area mapSelectionButton;
     private Area shopButton;
@@ -23,7 +21,7 @@ public class MainMenu {
     private boolean mapSelectionSelected;
 
 
-    public MainMenu(ResizableCanvas canvas, MonkeyHillClimbRacing monkeyHillClimbRacing) {
+    public MapSelectionMenu(ResizableCanvas canvas, MonkeyHillClimbRacing monkeyHillClimbRacing) {
         this.monkeyHillClimbRacing = monkeyHillClimbRacing;
 
         startButton = new Area(new Rectangle2D.Double(100, 560, 300, 50));
@@ -47,13 +45,11 @@ public class MainMenu {
             } else if (quitButton.contains(point)){
                 System.exit(1);
             } else if (shopButton.contains(point)){
-                canvas.setOnMouseClicked(null);
-                shopMenu = new ShopMenu(canvas, monkeyHillClimbRacing, this);
                 shopSelected = true;
-            } else if (mapSelectionButton.contains(point)){
                 canvas.setOnMouseClicked(null);
-                mapSelectionMenu = new MapSelectionMenu(canvas, monkeyHillClimbRacing);
+            } else if (mapSelectionButton.contains(point)){
                 mapSelectionSelected = true;
+                canvas.setOnMouseClicked(null);
             }
         });
     }
@@ -95,36 +91,6 @@ public class MainMenu {
             g2d.drawString("High score: " + monkeyHillClimbRacing.getPlayerStats().getHighScore() + " m", 1550, 100);
             g2d.drawString("Coins: " + monkeyHillClimbRacing.getPlayerStats().getCoins(), 1550, 150);
 
-        } else if (shopSelected){
-            shopMenu.draw(g2d);
-        } else if (mapSelectionSelected){
-            mapSelectionMenu.draw(g2d);
         }
-    }
-
-    public void resetMouseEventListeners(){
-        canvas.setOnMouseClicked(event -> {
-            Point2D point = new Point2D.Double(event.getX(), event.getY());
-            if (startButton.contains(point)){
-                monkeyHillClimbRacing.setGameStarted(true);
-                canvas.setOnMouseClicked(null);
-            } else if (quitButton.contains(point)){
-                System.exit(1);
-            } else if (shopButton.contains(point)){
-                shopSelected = true;
-                canvas.setOnMouseClicked(null);
-            } else if (mapSelectionButton.contains(point)){
-                mapSelectionSelected = true;
-                canvas.setOnMouseClicked(null);
-            }
-        });
-    }
-
-    public void setShopSelected(boolean shopSelected) {
-        this.shopSelected = shopSelected;
-    }
-
-    public void setMapSelectionSelected(boolean mapSelectionSelected) {
-        this.mapSelectionSelected = mapSelectionSelected;
     }
 }

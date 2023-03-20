@@ -41,6 +41,8 @@ public class MonkeyHillClimbRacing extends Application {
     private boolean isGameOver = false;
     private double maxFuel;
     private double currentFuel;
+    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
+    private PlayerStats playerStats  = playerStatsLoaderAndSaver.load();;
 
 
     @Override
@@ -160,11 +162,18 @@ public class MonkeyHillClimbRacing extends Application {
 
             groundBodies.add(line);
             world.addBody(line);
-
-            PlayerStats pl = new PlayerStats();
-            PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
-            playerStatsLoaderAndSaver.save(pl);
         }
+
+
+        System.out.println(playerStats.getCoins());
+        System.out.println(playerStats.getHighScore());
+
+        System.out.println(playerStats.getAerialControlUpgradeLvl());
+        System.out.println(playerStats.getEngineUpgradeLvl());
+        System.out.println(playerStats.getFuelUpgradeLvl());
+        System.out.println(playerStats.getTireUpgradeLvl());
+
+        System.out.println(playerStats.getSelectedLevel());
 
 
         car = new Body();
@@ -199,7 +208,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         leftWheel = new Body();
         leftWheel.addFixture(Geometry.createCircle(.25));
-        leftWheel.getFixture(0).setFriction(25);
+        leftWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl()));
         leftWheel.getTransform().setTranslation(leftSpringPoint.getTransform().getTranslation());
         leftWheel.setMass(MassType.NORMAL);
         world.addBody(leftWheel);
@@ -221,7 +230,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         rightWheel = new Body();
         rightWheel.addFixture(Geometry.createCircle(.25));
-        rightWheel.getFixture(0).setFriction(25);
+        rightWheel.getFixture(0).setFriction(20 + (playerStats.getTireUpgradeLvl()));
         rightWheel.getTransform().setTranslation(rightSpringPoint.getTransform().getTranslation());
         rightWheel.setMass(MassType.NORMAL);
         world.addBody(rightWheel);
@@ -258,7 +267,7 @@ public class MonkeyHillClimbRacing extends Application {
 
         scorePoint = new Point2D.Double(car.getTransform().getTranslationX() + 1000, car.getTransform().getTranslationY() - 500);
 
-        maxFuel = 50.0;
+        maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 10);
         currentFuel = maxFuel;
     }
 
@@ -398,12 +407,24 @@ public class MonkeyHillClimbRacing extends Application {
         graphics.draw(okButton);
         graphics.drawString("OK", (int) (-(camera.getCenterPoint().getX())) - 50, (int) (-(camera.getCenterPoint().getY())) + 175);
 
+
+
+
+
+
         canvas.setOnMouseClicked(event -> {
             //not the best solution to get the right mouse position
             Point2D point = new Point2D.Double(event.getX() - (canvas.getWidth() / 2), (event.getY() - (canvas.getHeight() / 2)));
             Area relativeOkButton = new Area(new Rectangle2D.Double(-120, 80, 240, 80));
 
             if (relativeOkButton.contains(point)) {
+                int result = playerStats.getCoins() + coinsEarned;
+                playerStats.setCoins(result);
+
+                if (distanceScore > playerStats.getHighScore()) {
+                    playerStats.setHighScore(distanceScore);
+                }
+
                 canvas.setOnMouseClicked(null);
                 gameOverCause = "";
                 this.isGameOver = false;
@@ -423,25 +444,25 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     public int calculateCoinsEarned() {
-        return (int) (5 + (0.2 * distanceScore));
+        return (int) (5 + (0.2 * distanceScore)) * playerStats.getSelectedLevel();
     }
 
     private void rotateRight() {
-        car.applyImpulse(-0.04);
+        car.applyImpulse(-0.03 + (playerStats.getAerialControlUpgradeLvl() * 0.005));
     }
 
     private void rotateLeft() {
-        car.applyImpulse(0.04);
+        car.applyImpulse(0.03 + (playerStats.getAerialControlUpgradeLvl() * 0.005));
     }
 
     private void driveBackwards() {
-        leftWheel.applyImpulse(0.015);
-        rightWheel.applyImpulse(0.015);
+        leftWheel.applyImpulse(0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
+        rightWheel.applyImpulse(0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
     }
 
     private void driveForwards() {
-        leftWheel.applyImpulse(-0.015);
-        rightWheel.applyImpulse(-0.015);
+        leftWheel.applyImpulse(-0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
+        rightWheel.applyImpulse(-0.008 + (playerStats.getEngineUpgradeLvl() * 0.002));
     }
 
     public void generateGround(int amount) {
@@ -539,5 +560,13 @@ public class MonkeyHillClimbRacing extends Application {
 
     public void setGameStarted(boolean gameStarted) {
         isGameStarted = gameStarted;
+    }
+
+    public PlayerStats getPlayerStats() {
+        return playerStats;
+    }
+
+    public void setPlayerStats(PlayerStats playerStats) {
+        this.playerStats = playerStats;
     }
 }
