@@ -50,21 +50,10 @@ public class ShopMenu {
 
         backButton = new Area(new Rectangle2D.Double(100, 910, 105, 50));
 
-        upgradeEngineButton = new Area(new Rectangle2D.Double(500, 700, 220, 120));
-        upgradeTiresButton = new Area(new Rectangle2D.Double(740, 700, 220, 120));
-        upgradeAerialControlButton = new Area(new Rectangle2D.Double(980, 700, 220, 120));
-        upgradeFuelButton = new Area(new Rectangle2D.Double(1220, 700, 220, 120));
-
-
-        canvas.setOnMouseClicked(event -> {
-            Point2D point = new Point2D.Double(event.getX(), event.getY());
-            if (backButton.contains(point)){
-                canvas.setOnMouseClicked(null);
-                System.out.println("Joe moeder");
-                mainMenu.setShopSelected(false);
-                mainMenu.resetMouseEventListeners();
-            }
-        });
+        upgradeEngineButton = new Area(new Rectangle2D.Double(470, 700, 220, 120));
+        upgradeTiresButton = new Area(new Rectangle2D.Double(710, 700, 180, 120));
+        upgradeAerialControlButton = new Area(new Rectangle2D.Double(910, 700, 300, 120));
+        upgradeFuelButton = new Area(new Rectangle2D.Double(1230, 700, 210, 120));
     }
 
     public void draw(Graphics2D g2d) {
@@ -106,12 +95,10 @@ public class ShopMenu {
 
         g2d.setFont(new Font("Arial", Font.PLAIN, 46));
         g2d.drawString("Engine lvl: " + monkeyHillClimbRacing.getPlayerStats().getEngineUpgradeLvl(), 100, 100);
-
         g2d.drawString("Tires lvl: " + monkeyHillClimbRacing.getPlayerStats().getTireUpgradeLvl(), 100, 200);
-
         g2d.drawString("Aerial control lvl: " + monkeyHillClimbRacing.getPlayerStats().getAerialControlUpgradeLvl(), 100, 300);
-
         g2d.drawString("Fuel lvl: " + monkeyHillClimbRacing.getPlayerStats().getFuelUpgradeLvl(), 100, 400);
+
 
         g2d.drawString("Back", 100, 950);
 
@@ -119,6 +106,30 @@ public class ShopMenu {
         g2d.drawString("High score: " + monkeyHillClimbRacing.getPlayerStats().getHighScore() + " m", 1550, 100);
         g2d.drawString("Coins: " + monkeyHillClimbRacing.getPlayerStats().getCoins(), 1550, 150);
 
+
+        g2d.drawString("Engine lvl " + (monkeyHillClimbRacing.getPlayerStats().getEngineUpgradeLvl() + 1), 480, 750);
+        g2d.drawString(engineCost + " coins", 480, 800);
+
+        g2d.drawString("Tires lvl " + (monkeyHillClimbRacing.getPlayerStats().getTireUpgradeLvl() + 1), 720, 750);
+        g2d.drawString(engineCost + " coins", 720, 800);
+
+        g2d.drawString("Aerial control lvl " + (monkeyHillClimbRacing.getPlayerStats().getAerialControlUpgradeLvl() + 1), 920, 750);
+        g2d.drawString(engineCost + " coins", 920, 800);
+
+        g2d.drawString("Fuel lvl " + (monkeyHillClimbRacing.getPlayerStats().getFuelUpgradeLvl() + 1), 1240, 750);
+        g2d.drawString(engineCost + " coins", 1240, 800);
+
+    }
+
+    public void resetMouseEventListeners() {
+        canvas.setOnMouseClicked(event -> {
+            Point2D point = new Point2D.Double(event.getX(), event.getY());
+            if (backButton.contains(point)) {
+                canvas.setOnMouseClicked(null);
+                mainMenu.setShopSelected(false);
+                mainMenu.resetMouseEventListeners();
+            }
+        });
     }
 
     public void calculateCosts() {

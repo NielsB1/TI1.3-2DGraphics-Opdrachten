@@ -41,8 +41,8 @@ public class MonkeyHillClimbRacing extends Application {
     private boolean isGameOver = false;
     private double maxFuel;
     private double currentFuel;
-    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
-    private PlayerStats playerStats  = playerStatsLoaderAndSaver.load();;
+    private PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
+    private PlayerStats playerStats = playerStatsLoaderAndSaver.load();
 
 
     @Override
@@ -76,6 +76,7 @@ public class MonkeyHillClimbRacing extends Application {
         canvas.setOnKeyReleased(event -> onKeyReleased(event));
 
         mainMenu = new MainMenu(canvas, this);
+        mainMenu.resetMouseEventListeners();
         new AnimationTimer() {
             long last = -1;
 
@@ -128,6 +129,17 @@ public class MonkeyHillClimbRacing extends Application {
     private double distance = 1000;
 
     public void init() {
+//        PlayerStats playerStats = new PlayerStats();
+//        playerStats.setCoins(0);
+//        playerStats.setTireUpgradeLvl(1);
+//        playerStats.setEngineUpgradeLvl(1);
+//        playerStats.setHighScore(0);
+//        playerStats.setSelectedLevel(1);
+//        playerStats.setFuelUpgradeLvl(1);
+//        playerStats.setAerialControlUpgradeLvl(1);
+//        playerStatsLoaderAndSaver.save(playerStats);
+
+
         world = new World();
         world.setGravity(new Vector2(0, -9.81));
         noiseMapGenerator = new NoiseMapGenerator(420);
@@ -163,17 +175,6 @@ public class MonkeyHillClimbRacing extends Application {
             groundBodies.add(line);
             world.addBody(line);
         }
-
-
-        System.out.println(playerStats.getCoins());
-        System.out.println(playerStats.getHighScore());
-
-        System.out.println(playerStats.getAerialControlUpgradeLvl());
-        System.out.println(playerStats.getEngineUpgradeLvl());
-        System.out.println(playerStats.getFuelUpgradeLvl());
-        System.out.println(playerStats.getTireUpgradeLvl());
-
-        System.out.println(playerStats.getSelectedLevel());
 
 
         car = new Body();
@@ -406,10 +407,6 @@ public class MonkeyHillClimbRacing extends Application {
         Area okButton = new Area(new Rectangle2D.Double((int) (-(camera.getCenterPoint().getX())) - 150, (int) (-(camera.getCenterPoint().getY())) + 100, 300, 100));
         graphics.draw(okButton);
         graphics.drawString("OK", (int) (-(camera.getCenterPoint().getX())) - 50, (int) (-(camera.getCenterPoint().getY())) + 175);
-
-
-
-
 
 
         canvas.setOnMouseClicked(event -> {

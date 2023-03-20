@@ -39,15 +39,15 @@ public class MapSelectionMenu {
 
         canvas.setOnMouseClicked(event -> {
             Point2D point = new Point2D.Double(event.getX(), event.getY());
-            if (startButton.contains(point)){
+            if (startButton.contains(point)) {
                 monkeyHillClimbRacing.setGameStarted(true);
                 canvas.setOnMouseClicked(null);
-            } else if (quitButton.contains(point)){
+            } else if (quitButton.contains(point)) {
                 System.exit(1);
-            } else if (shopButton.contains(point)){
+            } else if (shopButton.contains(point)) {
                 shopSelected = true;
                 canvas.setOnMouseClicked(null);
-            } else if (mapSelectionButton.contains(point)){
+            } else if (mapSelectionButton.contains(point)) {
                 mapSelectionSelected = true;
                 canvas.setOnMouseClicked(null);
             }
