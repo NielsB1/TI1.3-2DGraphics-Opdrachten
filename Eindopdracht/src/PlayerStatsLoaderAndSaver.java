@@ -5,8 +5,8 @@ public class PlayerStatsLoaderAndSaver {
 
     public void save(PlayerStats playerStats) {
         try {
-            String filePath = "/playerStats.txt"; // note the leading slash to indicate the file is in the resource folder
-            File file = new File(getClass().getResource(filePath).toURI());
+            String filePath = "Eindopdracht/resources/playerStats.txt";
+            File file = new File(filePath);
             FileOutputStream fileOut = new FileOutputStream(file);
             ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
             objectOut.writeObject(playerStats);
@@ -18,10 +18,9 @@ public class PlayerStatsLoaderAndSaver {
         }
     }
 
-    public PlayerStats load() {
-        try {
-            String filePath = "/playerStats.txt"; // note the leading slash to indicate the file is in the resource folder
-            File file = new File(getClass().getResource(filePath).toURI());
+    public PlayerStats load() throws Exception {
+            String filePath = "Eindopdracht/resources/playerStats.txt";
+            File file = new File(filePath);
             FileInputStream fileIn = new FileInputStream(file);
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
             PlayerStats playerStats = (PlayerStats) objectIn.readObject();
@@ -29,9 +28,5 @@ public class PlayerStatsLoaderAndSaver {
             fileIn.close();
             System.out.println("PlayerStats loaded successfully from " + filePath);
             return playerStats;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

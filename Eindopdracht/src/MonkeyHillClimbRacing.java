@@ -46,7 +46,7 @@ public class MonkeyHillClimbRacing extends Application {
     private double maxFuel;
     private double currentFuel;
     private PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = new PlayerStatsLoaderAndSaver();
-    private PlayerStats playerStats = playerStatsLoaderAndSaver.load();
+    private PlayerStats playerStats;
 
 
     @Override
@@ -137,15 +137,19 @@ public class MonkeyHillClimbRacing extends Application {
     private Color sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
 
     public void init() {
-//        PlayerStats playerStats = new PlayerStats();
-//        playerStats.setAerialControlUpgradeLvl(1);
-//        playerStats.setCoins(0);
-//        playerStats.setEngineUpgradeLvl(1);
-//        playerStats.setFuelUpgradeLvl(1);
-//        playerStats.setHighScore(0);
-//        playerStats.setSelectedLevel(1);
-//        playerStats.setTireUpgradeLvl(1);
-//        playerStatsLoaderAndSaver.save(playerStats);
+        try {
+            playerStats = playerStatsLoaderAndSaver.load();
+        } catch (Exception e) {
+            playerStats = new PlayerStats();
+            playerStats.setAerialControlUpgradeLvl(1);
+            playerStats.setCoins(0);
+            playerStats.setEngineUpgradeLvl(1);
+            playerStats.setFuelUpgradeLvl(1);
+            playerStats.setHighScore(0);
+            playerStats.setSelectedLevel(1);
+            playerStats.setTireUpgradeLvl(1);
+            playerStatsLoaderAndSaver.save(playerStats);
+        }
 
         world = new World();
         world.setGravity(new Vector2(0, gravity));
