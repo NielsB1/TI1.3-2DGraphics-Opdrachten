@@ -449,6 +449,7 @@ public class MonkeyHillClimbRacing extends Application {
                 if (distanceScore > playerStats.getHighScore()) {
                     playerStats.setHighScore(distanceScore);
                 }
+                playerStatsLoaderAndSaver.save(playerStats);
 
                 gameOverCause = "";
                 this.isGameOver = false;
