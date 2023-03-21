@@ -94,6 +94,8 @@ public class MainMenu {
                 canvas.setOnMouseClicked(null);
                 monkeyHillClimbRacing.setGameStarted(true);
             } else if (quitButton.contains(point)) {
+                PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
                 System.exit(1);
             } else if (shopButton.contains(point)) {
                 canvas.setOnMouseClicked(null);

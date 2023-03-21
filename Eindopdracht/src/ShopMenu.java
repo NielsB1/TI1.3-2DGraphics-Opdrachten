@@ -135,6 +135,9 @@ public class ShopMenu {
                     playerStats.setEngineUpgradeLvl(playerStats.getEngineUpgradeLvl() + 1);
                     playerStats.setCoins(playerStats.getCoins() - engineCost);
                     monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                    playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
                 }
             } else if (upgradeTiresButton.contains(point)) {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
@@ -143,6 +146,9 @@ public class ShopMenu {
                     playerStats.setTireUpgradeLvl(playerStats.getTireUpgradeLvl() + 1);
                     playerStats.setCoins(playerStats.getCoins() - tiresCost);
                     monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                    playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
                 }
             } else if (upgradeAerialControlButton.contains(point)) {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
@@ -151,6 +157,9 @@ public class ShopMenu {
                     playerStats.setAerialControlUpgradeLvl(playerStats.getAerialControlUpgradeLvl() + 1);
                     playerStats.setCoins(playerStats.getCoins() - aerialControlCost);
                     monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                    playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
                 }
             } else if (upgradeFuelButton.contains(point)) {
                 PlayerStats playerStats = monkeyHillClimbRacing.getPlayerStats();
@@ -159,6 +168,9 @@ public class ShopMenu {
                     playerStats.setFuelUpgradeLvl(playerStats.getFuelUpgradeLvl() + 1);
                     playerStats.setCoins(playerStats.getCoins() - fuelCost);
                     monkeyHillClimbRacing.setPlayerStats(playerStats);
+
+                    PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                    playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
                 }
             }
         });

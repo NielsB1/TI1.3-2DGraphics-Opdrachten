@@ -13,6 +13,10 @@ public class MapSelectionMenu {
 
     private ResizableCanvas canvas;
     private BufferedImage background;
+    private BufferedImage grassMap;
+    private BufferedImage highwayMap;
+    private BufferedImage moonMap;
+    private BufferedImage mountainMap;
     private MonkeyHillClimbRacing monkeyHillClimbRacing;
     private MainMenu mainMenu;
 
@@ -33,6 +37,10 @@ public class MapSelectionMenu {
 
         try {
             background = ImageIO.read(getClass().getResource("jungleBackground.png"));
+            grassMap = ImageIO.read(getClass().getResource("grassMap.png"));
+            highwayMap = ImageIO.read(getClass().getResource("highwayMap.png"));
+            moonMap = ImageIO.read(getClass().getResource("moonMap.png"));
+            mountainMap = ImageIO.read(getClass().getResource("mountainMap.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -52,6 +60,19 @@ public class MapSelectionMenu {
         affineTransform.scale(1.6, 1.6);
         g2d.drawImage(background, affineTransform, null);
 
+        affineTransform.scale(1, 1);
+        affineTransform.setToTranslation(150,400);
+        g2d.drawImage(grassMap, affineTransform, null);
+
+        affineTransform.setToTranslation(575,400);
+        g2d.drawImage(highwayMap, affineTransform, null);
+
+        affineTransform.setToTranslation(1000,400);
+        g2d.drawImage(moonMap, affineTransform, null);
+
+        affineTransform.setToTranslation(1425,400);
+        g2d.drawImage(mountainMap, affineTransform, null);
+
         g2d.setColor(Color.white);
         g2d.setStroke(new BasicStroke(5));
         g2d.draw(backButton);
@@ -63,10 +84,10 @@ public class MapSelectionMenu {
 
         g2d.setColor(Color.darkGray);
         g2d.fill(backButton);
-        g2d.fill(map1);
-        g2d.fill(map2);
-        g2d.fill(map3);
-        g2d.fill(map4);
+//        g2d.fill(map1);
+//        g2d.fill(map2);
+//        g2d.fill(map3);
+//        g2d.fill(map4);
 
 
         g2d.setColor(Color.white);

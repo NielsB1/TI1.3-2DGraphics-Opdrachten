@@ -137,6 +137,16 @@ public class MonkeyHillClimbRacing extends Application {
     private Color sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
 
     public void init() {
+//        PlayerStats playerStats = new PlayerStats();
+//        playerStats.setAerialControlUpgradeLvl(1);
+//        playerStats.setCoins(0);
+//        playerStats.setEngineUpgradeLvl(1);
+//        playerStats.setFuelUpgradeLvl(1);
+//        playerStats.setHighScore(0);
+//        playerStats.setSelectedLevel(1);
+//        playerStats.setTireUpgradeLvl(1);
+//        playerStatsLoaderAndSaver.save(playerStats);
+
         world = new World();
         world.setGravity(new Vector2(0, gravity));
         noiseMapGenerator = new NoiseMapGenerator((long) (Math.random() * Long.MAX_VALUE));
@@ -176,7 +186,7 @@ public class MonkeyHillClimbRacing extends Application {
 
 
         car = new Body();
-        car.addFixture(Geometry.createRectangle(2.4, .30));
+        car.addFixture(Geometry.createRectangle(2.2, .25));
         car.addFixture(Geometry.createRectangle(1, .65));
 
         car.getTransform().setTranslation(-3, 1);
@@ -274,7 +284,6 @@ public class MonkeyHillClimbRacing extends Application {
 
         maxFuel = 20.0 + (playerStats.getFuelUpgradeLvl() * 20);
         currentFuel = maxFuel;
-        playerStats.setCoins(100000);
     }
 
     private int distanceScore = 0;
@@ -373,7 +382,7 @@ public class MonkeyHillClimbRacing extends Application {
 
             int x = (int) (driverHead.getTransform().getTranslationX() * scale);
             if (driverHead.getTransform().getTranslationX() > 0) {
-                if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 20) {
+                if ((driverHead.getTransform().getTranslationY() * scale) - (noiseMapGenerator.noise(x / distance) * amplitude) < 30) {
                     this.isGameOver = true;
                     this.coinsEarned = calculateCoinsEarned();
                     gameOverCause = "Monkey head is hurting!";
@@ -472,8 +481,8 @@ public class MonkeyHillClimbRacing extends Application {
                 gravity = -9.81;
 
                 resolution = 200;
-                amplitude = 2500;
-                distance = 3000;
+                amplitude = 5000;
+                distance = 5000;
 
                 surface = Color.darkGray;
                 ground = Color.gray;
@@ -487,9 +496,9 @@ public class MonkeyHillClimbRacing extends Application {
                 distance = 1500;
 
                 //todo make the map look like the moon
-                surface = Color.darkGray;
-                ground = Color.gray;
-                sky = Color.getHSBColor(360 / 80f, 0.3f, 0.8f);
+                surface = Color.getHSBColor(360 / 50f, 0.1f, 0.8f);
+                ground = Color.getHSBColor(360 / 215f, 0.15f, 0.65f);
+                sky = Color.getHSBColor(360 / 225f, 1f, 0.1f);
                 break;
             case 4:
                 gravity = -9.81;
@@ -636,5 +645,9 @@ public class MonkeyHillClimbRacing extends Application {
 
     public void setPlayerStats(PlayerStats playerStats) {
         this.playerStats = playerStats;
+    }
+
+    public PlayerStatsLoaderAndSaver getPlayerStatsLoaderAndSaver() {
+        return playerStatsLoaderAndSaver;
     }
 }
