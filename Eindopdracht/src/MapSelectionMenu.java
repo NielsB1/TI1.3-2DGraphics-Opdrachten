@@ -122,6 +122,9 @@ public class MapSelectionMenu {
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
                 monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
+                PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
+
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
                 mainMenu.resetMouseEventListeners();
@@ -130,6 +133,9 @@ public class MapSelectionMenu {
                 playerStats.setSelectedLevel(2);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
                 monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
+
+                PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
@@ -140,6 +146,9 @@ public class MapSelectionMenu {
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
                 monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
 
+                PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
+
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);
                 mainMenu.resetMouseEventListeners();
@@ -148,6 +157,9 @@ public class MapSelectionMenu {
                 playerStats.setSelectedLevel(4);
                 monkeyHillClimbRacing.setPlayerStats(playerStats);
                 monkeyHillClimbRacing.changeMap(playerStats.getSelectedLevel());
+
+                PlayerStatsLoaderAndSaver playerStatsLoaderAndSaver = monkeyHillClimbRacing.getPlayerStatsLoaderAndSaver();
+                playerStatsLoaderAndSaver.save(monkeyHillClimbRacing.getPlayerStats());
 
                 canvas.setOnMouseClicked(null);
                 mainMenu.setMapSelectionSelected(false);

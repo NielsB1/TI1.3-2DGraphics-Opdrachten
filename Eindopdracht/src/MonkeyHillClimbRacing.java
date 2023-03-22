@@ -500,7 +500,6 @@ public class MonkeyHillClimbRacing extends Application {
                 amplitude = 1200;
                 distance = 1500;
 
-                //todo make the map look like the moon
                 surface = Color.getHSBColor(360 / 50f, 0.1f, 0.8f);
                 ground = Color.getHSBColor(360 / 215f, 0.15f, 0.65f);
                 sky = Color.getHSBColor(360 / 225f, 1f, 0.1f);
@@ -525,6 +524,7 @@ public class MonkeyHillClimbRacing extends Application {
     }
 
     public int calculateCoinsEarned() {
+        System.out.println(playerStats.getSelectedLevel());
         return (int) ((5 + (0.45 * distanceScore)) * Math.pow(2, playerStats.getSelectedLevel()));
     }
 
